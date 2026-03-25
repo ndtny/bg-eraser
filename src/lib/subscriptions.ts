@@ -12,10 +12,11 @@ export interface Subscription {
   updatedAt: string;
 }
 
-// Hardcoded Pro users (admin whitelist, bypasses payment)
-const PRO_WHITELIST = new Set([
-  "ziqingai1024@gmail.com",
-]);
+// Admin whitelist loaded from env var (comma-separated emails)
+// Set ADMIN_PRO_EMAILS in Vercel env vars, e.g. "a@b.com,c@d.com"
+const PRO_WHITELIST = new Set(
+  (process.env.ADMIN_PRO_EMAILS || "").split(",").map(e => e.trim().toLowerCase()).filter(Boolean)
+);
 
 const KV_PREFIX = "sub:";
 
