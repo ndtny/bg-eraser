@@ -4,9 +4,9 @@ import AuthButton from "@/components/AuthButton";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "BG Eraser - Free AI Background Remover | Remove Background Online",
+  title: "AI BG Eraser - Free AI Background Remover | Remove Background Online",
   description:
-    "Remove image backgrounds instantly with AI. Free online background remover for photos, product images, portraits and more. No signup required.",
+    "Remove image backgrounds instantly with AI. Free online background remover for photos, product images, portraits and more. 3 free uses daily, no signup required.",
   keywords: [
     "background remover",
     "remove background",
@@ -51,6 +51,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {process.env.NEXT_PUBLIC_GA_ID && (
+          <>
+            <script async src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`} />
+            <script dangerouslySetInnerHTML={{
+              __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${process.env.NEXT_PUBLIC_GA_ID}');`
+            }} />
+          </>
+        )}
+      </head>
       <body className="antialiased min-h-screen flex flex-col">
         <Providers>
         <header className="border-b border-[var(--border)]">

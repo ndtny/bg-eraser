@@ -1,7 +1,8 @@
 import { readFileSync, writeFileSync, mkdirSync } from "fs";
 import { join } from "path";
 
-const DATA_DIR = join(process.cwd(), ".usage-data");
+const isVercel = !!process.env.VERCEL;
+const DATA_DIR = isVercel ? "/tmp/usage-data" : join(process.cwd(), ".usage-data");
 const SUBS_FILE = join(DATA_DIR, "subscriptions.json");
 
 export interface Subscription {
@@ -9,7 +10,7 @@ export interface Subscription {
   customerId: string;
   customerEmail: string;
   variantId: string;
-  status: string; // active, cancelled, expired, paused, past_due
+  status: string;
   renewsAt: string | null;
   endsAt: string | null;
   createdAt: string;
@@ -17,7 +18,6 @@ export interface Subscription {
 }
 
 interface SubsStore {
-  // Keyed by customer email for easy lookup
   [email: string]: Subscription;
 }
 

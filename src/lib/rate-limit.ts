@@ -2,7 +2,10 @@ import { readFileSync, writeFileSync, mkdirSync } from "fs";
 import { join } from "path";
 
 const FREE_LIMIT = 3;
-const DATA_DIR = join(process.cwd(), ".usage-data");
+
+// Use /tmp on Vercel (writable but ephemeral), project dir locally
+const isVercel = !!process.env.VERCEL;
+const DATA_DIR = isVercel ? "/tmp/usage-data" : join(process.cwd(), ".usage-data");
 const DATA_FILE = join(DATA_DIR, "usage.json");
 
 interface UsageStore {
@@ -13,13 +16,13 @@ function getToday(): string {
   return new Date().toISOString().split("T")[0];
 }
 
-// Use /24 subnet as key (first 3 octets) to handle rotating IPs (VPN/proxy)
+// Use /24 subnet as key to handle rotating IPs (VPN/proxy)
 function normalizeIp(ip: string): string {
   const parts = ip.split(".");
   if (parts.length === 4) {
     return parts.slice(0, 3).join(".") + ".0";
   }
-  return ip; // IPv6 or unknown, use as-is
+  return ip;
 }
 
 function readStore(): UsageStore {
@@ -76,10 +79,10 @@ export function recordUsage(ip: string): void {
     record.count += 1;
   }
 
-  // Clean old entries while we're at it
-  for (const key of Object.keys(store)) {
-    if (store[key].date !== today) {
-      delete store[key];
+  // Clean old entries
+  for (const k of Object.keys(store)) {
+    if (store[k].date !== today) {
+      delete store[k];
     }
   }
 
