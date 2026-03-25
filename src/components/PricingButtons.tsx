@@ -1,8 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { Loader2 } from "lucide-react";
-
 interface PricingButtonsProps {
   action: string;
   label: string;
@@ -14,61 +11,36 @@ export default function PricingButtons({
   label,
   highlighted,
 }: PricingButtonsProps) {
-  const [loading, setLoading] = useState(false);
-
-  const handleClick = async () => {
+  const handleClick = () => {
     if (action === "free") {
       window.location.href = "/";
       return;
     }
-
-    if (action === "api") {
-      window.location.href = "mailto:hello@aibgeraser.com?subject=API Plan Inquiry";
-      return;
-    }
-
-    if (action === "pro") {
-      setLoading(true);
-      try {
-        const res = await fetch("/api/checkout", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({}),
-        });
-
-        const data = await res.json();
-
-        if (data.url) {
-          window.location.href = data.url;
-        } else {
-          alert(data.error || "Failed to create checkout. Please try again.");
-        }
-      } catch {
-        alert("Something went wrong. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    }
+    // Pro and API are not available yet
   };
 
+  if (action === "free") {
+    return (
+      <button
+        onClick={handleClick}
+        className="block w-full py-3 rounded-xl text-center font-medium transition-smooth border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--secondary)]"
+      >
+        {label}
+      </button>
+    );
+  }
+
+  // Pro and API — show Coming Soon
   const baseStyle = highlighted
-    ? "bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)]"
-    : "border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--secondary)]";
+    ? "bg-[var(--primary)]/20 text-[var(--primary)] border border-[var(--primary)]/30"
+    : "border border-[var(--border)] text-[var(--muted)]";
 
   return (
     <button
-      onClick={handleClick}
-      disabled={loading}
-      className={`block w-full py-3 rounded-xl text-center font-medium transition-smooth disabled:opacity-70 ${baseStyle}`}
+      disabled
+      className={`block w-full py-3 rounded-xl text-center font-medium cursor-not-allowed ${baseStyle}`}
     >
-      {loading ? (
-        <span className="flex items-center justify-center gap-2">
-          <Loader2 className="w-4 h-4 animate-spin" />
-          Loading...
-        </span>
-      ) : (
-        label
-      )}
+      Coming Soon
     </button>
   );
 }

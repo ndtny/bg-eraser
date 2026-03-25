@@ -161,12 +161,9 @@ export default function ImageUploader({
               Upgrade to Pro for unlimited access.
             </p>
           </div>
-          <a
-            href="/pricing"
-            className="mt-2 px-6 py-3 bg-[var(--primary)] text-white rounded-xl font-medium hover:bg-[var(--primary-hover)] transition-smooth"
-          >
-            Upgrade to Pro — $9.9/month
-          </a>
+          <div className="mt-2 px-6 py-3 bg-[var(--primary)]/20 text-[var(--primary)] rounded-xl font-medium border border-[var(--primary)]/30">
+            Pro Plan — Coming Soon
+          </div>
           <p className="text-xs text-[var(--muted)]">
             Free uses reset daily at midnight UTC
           </p>
