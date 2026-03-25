@@ -12,11 +12,7 @@ export interface Subscription {
   updatedAt: string;
 }
 
-// Admin whitelist loaded from env var (comma-separated emails)
-// Set ADMIN_PRO_EMAILS in Vercel env vars, e.g. "a@b.com,c@d.com"
-const PRO_WHITELIST = new Set(
-  (process.env.ADMIN_PRO_EMAILS || "").split(",").map(e => e.trim().toLowerCase()).filter(Boolean)
-);
+// No hardcoded whitelist — all Pro status stored in KV
 
 const KV_PREFIX = "sub:";
 
@@ -61,18 +57,27 @@ export async function getSubscriptionByEmail(email: string): Promise<Subscriptio
  * Check if email is a Pro user (whitelist OR active subscription)
  */
 export async function isProUser(email: string): Promise<boolean> {
-  if (PRO_WHITELIST.has(email.toLowerCase())) return true;
   const sub = await getSubscriptionByEmail(email);
   if (!sub) return false;
   return ["active", "on_trial"].includes(sub.status);
 }
 
 /**
- * Sync version for cases where we can't await (backward compat)
- * Only checks whitelist
+ * Manually set a user as Pro in KV (for admin use)
  */
-export function isProUserSync(email: string): boolean {
-  return PRO_WHITELIST.has(email.toLowerCase());
+export async function setProUser(email: string): Promise<void> {
+  const sub: Subscription = {
+    subscriptionId: "admin-granted",
+    customerId: "admin",
+    customerEmail: email.toLowerCase(),
+    variantId: "manual",
+    status: "active",
+    renewsAt: null,
+    endsAt: null,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  await upsertSubscription(sub);
 }
 
 /**
