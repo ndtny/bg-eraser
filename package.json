@@ -12,7 +12,6 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "@gradio/client": "^2.1.0",
     "browser-image-compression": "^2.0.2",
     "lucide-react": "^1.0.1",
     "next": "16.2.1",
