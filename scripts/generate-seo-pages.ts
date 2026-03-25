@@ -4,11 +4,12 @@
  */
 import { seoPages } from "../src/data/seo-pages";
 import { seoPagesBatch2 } from "../src/data/seo-pages-batch2";
+import { seoPagesBatch3 } from "../src/data/seo-pages-batch3";
 import { mkdirSync, writeFileSync } from "fs";
 import { join } from "path";
 
 const APP_DIR = join(__dirname, "..", "src", "app");
-const allPages = [...seoPages, ...seoPagesBatch2];
+const allPages = [...seoPages, ...seoPagesBatch2, ...seoPagesBatch3];
 
 for (const page of allPages) {
   const dir = join(APP_DIR, page.slug);
