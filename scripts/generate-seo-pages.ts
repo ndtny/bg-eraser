@@ -1,14 +1,16 @@
 /**
- * Generate SEO landing pages from seo-pages.ts data
+ * Generate SEO landing pages from seo-pages data
  * Run: npx tsx scripts/generate-seo-pages.ts
  */
 import { seoPages } from "../src/data/seo-pages";
+import { seoPagesBatch2 } from "../src/data/seo-pages-batch2";
 import { mkdirSync, writeFileSync } from "fs";
 import { join } from "path";
 
 const APP_DIR = join(__dirname, "..", "src", "app");
+const allPages = [...seoPages, ...seoPagesBatch2];
 
-for (const page of seoPages) {
+for (const page of allPages) {
   const dir = join(APP_DIR, page.slug);
   mkdirSync(dir, { recursive: true });
 
@@ -38,4 +40,4 @@ export default function Page() {
   console.log(`✅ ${page.slug}`);
 }
 
-console.log(`\nGenerated ${seoPages.length} SEO pages`);
+console.log(`\nGenerated ${allPages.length} SEO pages`);

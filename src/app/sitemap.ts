@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { seoPages } from "@/data/seo-pages";
+import { seoPagesBatch2 } from "@/data/seo-pages-batch2";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://www.aibgeraser.com";
@@ -29,7 +30,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   // New generated SEO pages
-  const generatedSeoPages: MetadataRoute.Sitemap = seoPages.map((page) => ({
+  const allSeoPages = [...seoPages, ...seoPagesBatch2];
+  const generatedSeoPages: MetadataRoute.Sitemap = allSeoPages.map((page) => ({
     url: `${baseUrl}/${page.slug}`,
     lastModified: now,
     changeFrequency: "monthly" as const,
