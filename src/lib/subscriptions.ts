@@ -32,8 +32,8 @@ export async function upsertSubscription(sub: Subscription): Promise<void> {
     return;
   }
   const key = `${KV_PREFIX}${sub.customerEmail.toLowerCase()}`;
-  await kv.set(key, JSON.stringify(sub));
-  // Also add to a set for listing
+  // Store as object directly (kv handles JSON serialization)
+  await kv.set(key, sub);
   await kv.sadd("sub:active_emails", sub.customerEmail.toLowerCase());
 }
 
@@ -44,9 +44,9 @@ export async function getSubscriptionByEmail(email: string): Promise<Subscriptio
   if (!isKvAvailable()) return null;
   try {
     const key = `${KV_PREFIX}${email.toLowerCase()}`;
-    const data = await kv.get<string>(key);
+    const data = await kv.get<Subscription>(key);
     if (!data) return null;
-    return typeof data === "string" ? JSON.parse(data) : data as unknown as Subscription;
+    return data;
   } catch (e) {
     console.error("[subscriptions] KV read error:", e);
     return null;

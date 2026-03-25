@@ -17,6 +17,8 @@ export async function POST(request: NextRequest) {
     }
 
     await setProUser(email);
+    // Small delay to ensure KV consistency
+    await new Promise(r => setTimeout(r, 500));
     const sub = await getSubscriptionByEmail(email);
 
     return NextResponse.json({
