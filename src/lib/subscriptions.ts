@@ -46,7 +46,13 @@ export function getSubscriptionByEmail(email: string): Subscription | null {
   return store[email] || null;
 }
 
+// Hardcoded Pro users (admin whitelist, bypasses payment)
+const PRO_WHITELIST = new Set([
+  "ziqingai1024@gmail.com",
+]);
+
 export function isProUser(email: string): boolean {
+  if (PRO_WHITELIST.has(email.toLowerCase())) return true;
   const sub = getSubscriptionByEmail(email);
   if (!sub) return false;
   return ["active", "on_trial"].includes(sub.status);
