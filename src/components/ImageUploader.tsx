@@ -92,7 +92,8 @@ export default function ImageUploader({
       // Update remaining from server response
       if (typeof result.remaining === "number") {
         setRemaining(result.remaining);
-        if (result.remaining <= 0) {
+        setIsPro(result.isPro || false);
+        if (result.remaining <= 0 && !result.isPro) {
           setLimitReached(true);
         }
       }

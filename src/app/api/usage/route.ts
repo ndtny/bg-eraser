@@ -2,12 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { isProUser } from "@/lib/subscriptions";
 
-export async function GET(request: NextRequest) {
-  const ip =
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    request.headers.get("x-real-ip") ||
-    "unknown";
+const COOKIE_NAME = "bg_usage";
 
+export async function GET(request: NextRequest) {
   // Check if user is Pro by email
   const email = request.nextUrl.searchParams.get("email");
   if (email && isProUser(email)) {
@@ -20,6 +17,7 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  const usage = checkRateLimit(ip);
+  const cookieValue = request.cookies.get(COOKIE_NAME)?.value;
+  const usage = checkRateLimit(cookieValue);
   return NextResponse.json({ ...usage, isPro: false });
 }

@@ -1,12 +1,22 @@
 "use client";
 
 import { useSession, signIn, signOut } from "next-auth/react";
-import { LogIn, LogOut, Crown } from "lucide-react";
-import { useState } from "react";
+import { LogIn, LogOut } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export default function AuthButton() {
   const { data: session, status } = useSession();
   const [showMenu, setShowMenu] = useState(false);
+  const [isPro, setIsPro] = useState(false);
+
+  useEffect(() => {
+    if (session?.user?.email) {
+      fetch(`/api/usage?email=${encodeURIComponent(session.user.email)}`)
+        .then((r) => r.json())
+        .then((d) => setIsPro(d.isPro || false))
+        .catch(() => {});
+    }
+  }, [session]);
 
   if (status === "loading") {
     return (
@@ -35,6 +45,11 @@ export default function AuthButton() {
           <span className="hidden sm:inline max-w-[120px] truncate">
             {session.user?.name || session.user?.email}
           </span>
+          {isPro && (
+            <span className="px-1.5 py-0.5 bg-[var(--primary)] text-white text-xs rounded-full font-bold">
+              PRO
+            </span>
+          )}
         </button>
 
         {showMenu && (

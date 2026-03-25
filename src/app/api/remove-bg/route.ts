@@ -83,20 +83,19 @@ async function callGradioSpace(imageBuffer: Buffer, mimeType: string): Promise<s
   throw new Error("No output image in response");
 }
 
+const COOKIE_NAME = "bg_usage";
+
 export async function POST(request: NextRequest) {
   try {
-    const ip =
-      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-      request.headers.get("x-real-ip") ||
-      "unknown";
-
     const { image, email } = await request.json();
 
     // Pro users skip rate limit
     const userIsPro = email && isProUser(email);
 
+    const cookieValue = request.cookies.get(COOKIE_NAME)?.value;
+
     if (!userIsPro) {
-      const { allowed } = checkRateLimit(ip);
+      const { allowed } = checkRateLimit(cookieValue);
       if (!allowed) {
         return NextResponse.json(
           {
@@ -132,22 +131,33 @@ export async function POST(request: NextRequest) {
     const contentType = imageResponse.headers.get("content-type") || "image/png";
     const processedImage = `data:${contentType};base64,${resultBase64}`;
 
-    // Record usage for free users
-    if (!userIsPro) {
-      recordUsage(ip);
-      const { remaining: newRemaining } = checkRateLimit(ip);
+    // Build response
+    if (userIsPro) {
       return NextResponse.json({
         image: processedImage,
-        remaining: newRemaining,
-        isPro: false,
+        remaining: 999,
+        isPro: true,
       });
     }
 
-    return NextResponse.json({
+    // Record usage for free users via cookie
+    const { newCookie, remaining } = recordUsage(cookieValue);
+    const response = NextResponse.json({
       image: processedImage,
-      remaining: 999,
-      isPro: true,
+      remaining,
+      isPro: false,
     });
+
+    // Set signed cookie (httpOnly, 24h expiry)
+    response.cookies.set(COOKIE_NAME, newCookie, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      maxAge: 86400,
+      path: "/",
+    });
+
+    return response;
   } catch (error) {
     console.error("Background removal error:", error);
     return NextResponse.json(
