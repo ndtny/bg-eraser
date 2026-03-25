@@ -7,7 +7,7 @@ const COOKIE_NAME = "bg_usage";
 export async function GET(request: NextRequest) {
   // Check if user is Pro by email
   const email = request.nextUrl.searchParams.get("email");
-  if (email && isProUser(email)) {
+  if (email && await isProUser(email)) {
     return NextResponse.json({
       allowed: true,
       remaining: 999,

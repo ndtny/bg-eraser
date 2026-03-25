@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
     const { image, email } = await request.json();
 
     // Pro users skip rate limit
-    const userIsPro = email && isProUser(email);
+    const userIsPro = email ? await isProUser(email) : false;
 
     const cookieValue = request.cookies.get(COOKIE_NAME)?.value;
 

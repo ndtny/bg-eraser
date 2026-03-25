@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
         updatedAt: attrs.updated_at,
       };
 
-      upsertSubscription(sub);
+      await upsertSubscription(sub);
 
       console.log(
         `[webhook] Subscription ${eventName}: ${sub.customerEmail} -> ${sub.status}`
