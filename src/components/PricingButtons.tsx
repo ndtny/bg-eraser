@@ -9,9 +9,6 @@ declare global {
       Checkout: {
         open: (options: Record<string, unknown>) => void;
       };
-      Environment: {
-        set: (env: string) => void;
-      };
       Setup: (options: Record<string, unknown>) => void;
     };
   }
@@ -54,7 +51,6 @@ export default function PricingButtons({
 
   const handleCheckout = async () => {
     if (!session?.user?.email) {
-      // Need to sign in first
       signIn("google");
       return;
     }
@@ -105,7 +101,25 @@ export default function PricingButtons({
     );
   }
 
-  // Pro plan — Paddle checkout
+  // Pro plan — Coming Soon until Paddle approved
+  const paddleApproved = false; // flip to true when Paddle approves
+
+  if (!paddleApproved) {
+    const baseStyle = highlighted
+      ? "bg-[var(--primary)]/20 text-[var(--primary)] border border-[var(--primary)]/30"
+      : "border border-[var(--border)] text-[var(--muted)]";
+
+    return (
+      <button
+        disabled
+        className={`block w-full py-3 rounded-xl text-center font-medium cursor-not-allowed ${baseStyle}`}
+      >
+        Coming Soon
+      </button>
+    );
+  }
+
+  // Pro plan — Paddle checkout (active after approval)
   return (
     <button
       onClick={handleCheckout}
