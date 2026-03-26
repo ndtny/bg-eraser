@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import ImageUploader from "@/components/ImageUploader";
 import ImagePreview from "@/components/ImagePreview";
+import BatchUploader from "@/components/BatchUploader";
 import {
   Zap,
   Shield,
@@ -14,9 +16,21 @@ import {
 } from "lucide-react";
 
 export default function Home() {
+  const { data: session } = useSession();
   const [originalImage, setOriginalImage] = useState<string | null>(null);
   const [processedImage, setProcessedImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isPro, setIsPro] = useState(false);
+  const [mode, setMode] = useState<"single" | "batch">("single");
+
+  useEffect(() => {
+    if (session?.user?.email) {
+      fetch(`/api/usage?email=${encodeURIComponent(session.user.email)}`)
+        .then((r) => r.json())
+        .then((d) => setIsPro(d.isPro || false))
+        .catch(() => {});
+    }
+  }, [session]);
 
   const handleImageProcessed = (original: string, processed: string) => {
     setOriginalImage(original);
@@ -54,26 +68,58 @@ export default function Home() {
           Perfect for product photos, portraits, logos, and more. No signup required.
         </p>
 
+        {/* Mode Toggle (Pro only) */}
+        {isPro && (
+          <div className="flex items-center justify-center gap-1 mb-6 bg-[var(--secondary)] rounded-lg p-1 max-w-xs mx-auto">
+            <button
+              onClick={() => setMode("single")}
+              className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                mode === "single"
+                  ? "bg-[var(--background)] text-[var(--foreground)] shadow-sm"
+                  : "text-[var(--muted)] hover:text-[var(--foreground)]"
+              }`}
+            >
+              Single
+            </button>
+            <button
+              onClick={() => setMode("batch")}
+              className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                mode === "batch"
+                  ? "bg-[var(--background)] text-[var(--foreground)] shadow-sm"
+                  : "text-[var(--muted)] hover:text-[var(--foreground)]"
+              }`}
+            >
+              Batch (up to 20)
+            </button>
+          </div>
+        )}
+
         {/* Upload / Preview Area */}
         <div className="max-w-2xl mx-auto">
-          {error && (
-            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-start gap-2">
-              <span className="shrink-0">⚠️</span>
-              {error}
-            </div>
-          )}
-
-          {processedImage && originalImage ? (
-            <ImagePreview
-              originalImage={originalImage}
-              processedImage={processedImage}
-              onReset={handleReset}
-            />
+          {mode === "batch" && isPro ? (
+            <BatchUploader />
           ) : (
-            <ImageUploader
-              onImageProcessed={handleImageProcessed}
-              onError={handleError}
-            />
+            <>
+              {error && (
+                <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-start gap-2">
+                  <span className="shrink-0">⚠️</span>
+                  {error}
+                </div>
+              )}
+
+              {processedImage && originalImage ? (
+                <ImagePreview
+                  originalImage={originalImage}
+                  processedImage={processedImage}
+                  onReset={handleReset}
+                />
+              ) : (
+                <ImageUploader
+                  onImageProcessed={handleImageProcessed}
+                  onError={handleError}
+                />
+              )}
+            </>
           )}
         </div>
 
