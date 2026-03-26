@@ -155,7 +155,7 @@ export default function PricingPage() {
               },
               {
                 q: "What payment methods do you accept?",
-                a: "We accept all major credit cards (Visa, Mastercard, AmEx), PayPal, and Apple Pay through our payment partner Lemon Squeezy. All payments are secure and encrypted.",
+                a: "We accept all major credit cards (Visa, Mastercard, AmEx), PayPal, and Apple Pay through our payment partner Paddle. All payments are secure and encrypted.",
               },
               {
                 q: "Can I cancel anytime?",

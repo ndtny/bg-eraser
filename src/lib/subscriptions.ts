@@ -91,6 +91,18 @@ export async function setProUser(email: string): Promise<void> {
 }
 
 /**
+ * Remove Pro status for a user
+ */
+export async function removeProUser(email: string): Promise<void> {
+  const redis = getRedis();
+  if (!redis) return;
+  const lower = email.toLowerCase();
+  const key = `${KV_PREFIX}${lower}`;
+  await redis.del(key);
+  await redis.srem("sub:active_emails", lower);
+}
+
+/**
  * Get all active subscriptions
  */
 export async function getAllActiveSubscriptions(): Promise<Subscription[]> {

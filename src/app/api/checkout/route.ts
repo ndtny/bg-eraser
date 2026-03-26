@@ -1,40 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createCheckout } from "@/lib/lemonsqueezy";
 
-export async function POST(request: NextRequest) {
+const PADDLE_PRICE_ID = process.env.PADDLE_PRICE_ID || "pri_01kmmjpjytkcmrmq9y36d5sq2t";
+
+export async function POST(req: NextRequest) {
   try {
-    const { variantId, email } = await request.json();
+    const { email } = await req.json();
 
-    const proVariantId = variantId || process.env.LEMONSQUEEZY_PRO_VARIANT_ID;
-
-    if (!proVariantId) {
-      return NextResponse.json(
-        { error: "Payment system not configured yet" },
-        { status: 503 }
-      );
+    if (!email) {
+      return NextResponse.json({ error: "Email required" }, { status: 400 });
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://aibgeraser.com";
-
-    const checkoutUrl = await createCheckout(proVariantId, {
+    // Return Paddle client-side checkout config
+    // Paddle.js handles the checkout overlay on the frontend
+    return NextResponse.json({
+      priceId: PADDLE_PRICE_ID,
       email,
-      redirectUrl: `${baseUrl}/pro/success`,
-      customData: {
-        source: "pricing_page",
-      },
     });
-
-    return NextResponse.json({ url: checkoutUrl });
   } catch (error) {
-    console.error("Checkout error:", error);
-    return NextResponse.json(
-      {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Failed to create checkout",
-      },
-      { status: 500 }
-    );
+    console.error("[Checkout] Error:", error);
+    return NextResponse.json({ error: "Failed to create checkout" }, { status: 500 });
   }
 }
