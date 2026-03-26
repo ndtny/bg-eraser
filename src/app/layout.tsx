@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Providers from "@/components/Providers";
-import AuthButton from "@/components/AuthButton";
+import NavBar from "@/components/NavBar";
+import Footer from "@/components/Footer";
 import "./globals.css";
 
 const SITE_NAME = "AI BG Eraser";
@@ -64,9 +65,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        {/* Prevent flash of wrong theme */}
+        <script dangerouslySetInnerHTML={{
+          __html: `(function(){try{var t=localStorage.getItem('theme');var d=t==='dark'||(t!=='light'&&window.matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light')}catch(e){document.documentElement.setAttribute('data-theme','light')}})();`
+        }} />
         {process.env.NEXT_PUBLIC_GA_ID && (
           <>
             <script async src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`} />
@@ -78,92 +83,9 @@ export default function RootLayout({
       </head>
       <body className="antialiased min-h-screen flex flex-col">
         <Providers>
-          {/* Header */}
-          <header className="sticky top-0 z-50 bg-[var(--background)]/80 backdrop-blur-lg border-b border-[var(--border)]">
-            <nav className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-              <a href="/" className="flex items-center gap-2 group">
-                <div className="w-8 h-8 bg-gradient-to-br from-[var(--primary)] to-purple-600 rounded-lg flex items-center justify-center shadow-sm group-hover:shadow-md transition-all">
-                  <svg width="18" height="18" viewBox="0 0 32 32" fill="none">
-                    <circle cx="18" cy="11" r="4" fill="white"/>
-                    <path d="M11 28c0-5.5 3.1-10 7-10s7 4.5 7 28" fill="white"/>
-                    <rect x="4" y="4" width="5" height="5" fill="white" opacity="0.4"/>
-                    <rect x="14" y="4" width="5" height="5" fill="white" opacity="0.4"/>
-                    <rect x="9" y="9" width="5" height="5" fill="white" opacity="0.4"/>
-                    <rect x="4" y="14" width="5" height="5" fill="white" opacity="0.4"/>
-                  </svg>
-                </div>
-                <span className="font-bold text-xl tracking-tight">
-                  <span className="text-[var(--primary)]">AI</span> BG Eraser
-                </span>
-              </a>
-              <div className="flex items-center gap-4 sm:gap-6">
-                <div className="hidden md:flex items-center gap-6 text-sm text-[var(--muted)]">
-                  <a href="/#features" className="hover:text-[var(--foreground)] transition-colors">
-                    Features
-                  </a>
-                  <a href="/pricing" className="hover:text-[var(--foreground)] transition-colors">
-                    Pricing
-                  </a>
-                  <a href="/#faq" className="hover:text-[var(--foreground)] transition-colors">
-                    FAQ
-                  </a>
-                </div>
-                <AuthButton />
-              </div>
-            </nav>
-          </header>
-
+          <NavBar />
           <main className="flex-1">{children}</main>
-
-          {/* Footer */}
-          <footer className="border-t border-[var(--border)] py-12 mt-20 bg-[var(--secondary)]">
-            <div className="max-w-6xl mx-auto px-4">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                <div className="col-span-2 md:col-span-1">
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="w-6 h-6 bg-gradient-to-br from-[var(--primary)] to-purple-600 rounded-md flex items-center justify-center">
-                      <svg width="14" height="14" viewBox="0 0 32 32" fill="none">
-                        <circle cx="18" cy="11" r="4" fill="white"/>
-                        <path d="M11 28c0-5.5 3.1-10 7-10s7 4.5 7 28" fill="white"/>
-                        <rect x="4" y="4" width="5" height="5" fill="white" opacity="0.4"/>
-                        <rect x="9" y="9" width="5" height="5" fill="white" opacity="0.4"/>
-                      </svg>
-                    </div>
-                    <span className="font-bold"><span className="text-[var(--primary)]">AI</span> BG Eraser</span>
-                  </div>
-                  <p className="text-sm text-[var(--muted)]">
-                    Free AI-powered background remover. Remove backgrounds from images instantly with one click.
-                  </p>
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-3 text-sm">Tools</h4>
-                  <ul className="space-y-2 text-sm text-[var(--muted)]">
-                    <li><a href="/remove-background-from-image" className="hover:text-[var(--foreground)] transition-colors">Remove Background from Image</a></li>
-                    <li><a href="/remove-background-from-photo" className="hover:text-[var(--foreground)] transition-colors">Remove Background from Photo</a></li>
-                    <li><a href="/transparent-background-maker" className="hover:text-[var(--foreground)] transition-colors">Transparent Background Maker</a></li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-3 text-sm">Use Cases</h4>
-                  <ul className="space-y-2 text-sm text-[var(--muted)]">
-                    <li><a href="/product-photo-background-remover" className="hover:text-[var(--foreground)] transition-colors">Product Photos</a></li>
-                    <li><a href="/remove-white-background" className="hover:text-[var(--foreground)] transition-colors">Remove White Background</a></li>
-                    <li><a href="/pricing" className="hover:text-[var(--foreground)] transition-colors">Pricing</a></li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-3 text-sm">Legal</h4>
-                  <ul className="space-y-2 text-sm text-[var(--muted)]">
-                    <li><a href="/privacy" className="hover:text-[var(--foreground)] transition-colors">Privacy Policy</a></li>
-                    <li><a href="/terms" className="hover:text-[var(--foreground)] transition-colors">Terms of Service</a></li>
-                  </ul>
-                </div>
-              </div>
-              <div className="mt-8 pt-8 border-t border-[var(--border)] text-center text-sm text-[var(--muted)]">
-                © {new Date().getFullYear()} AI BG Eraser. All rights reserved.
-              </div>
-            </div>
-          </footer>
+          <Footer />
         </Providers>
       </body>
     </html>

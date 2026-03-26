@@ -11,17 +11,15 @@
   --border: #e2e8f0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --primary: #818cf8;
-    --primary-hover: #6366f1;
-    --secondary: #1e293b;
-    --accent: #34d399;
-    --muted: #94a3b8;
-    --border: #334155;
-  }
+[data-theme="dark"] {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --primary: #818cf8;
+  --primary-hover: #6366f1;
+  --secondary: #1e293b;
+  --accent: #34d399;
+  --muted: #94a3b8;
+  --border: #334155;
 }
 
 * {
@@ -96,10 +94,8 @@ body {
   backdrop-filter: blur(12px);
   border: 1px solid var(--border);
 }
-@media (prefers-color-scheme: dark) {
-  .glass-card {
-    background: rgba(30, 41, 59, 0.7);
-  }
+[data-theme="dark"] .glass-card {
+  background: rgba(30, 41, 59, 0.7);
 }
 
 /* Mobile touch-friendly */
