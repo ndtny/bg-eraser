@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { createContext, useContext, useState, useEffect, useMemo } from "react";
 import { translations, type Locale, type TranslationKey } from "./translations";
 
 interface I18nContextType {
@@ -19,27 +19,27 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>("en");
 
   useEffect(() => {
-    // Read from localStorage on mount
     const saved = localStorage.getItem("locale") as Locale;
     if (saved && (saved === "en" || saved === "zh")) {
       setLocaleState(saved);
     }
   }, []);
 
-  const setLocale = useCallback((newLocale: Locale) => {
-    setLocaleState(newLocale);
-    localStorage.setItem("locale", newLocale);
-  }, []);
+  const value = useMemo(() => {
+    const setLocale = (newLocale: Locale) => {
+      setLocaleState(newLocale);
+      localStorage.setItem("locale", newLocale);
+    };
 
-  const t = useCallback(
-    (key: TranslationKey): string => {
+    const t = (key: TranslationKey): string => {
       return translations[locale][key] || translations.en[key] || key;
-    },
-    [locale]
-  );
+    };
+
+    return { locale, setLocale, t };
+  }, [locale]);
 
   return (
-    <I18nContext.Provider value={{ locale, setLocale, t }}>
+    <I18nContext.Provider value={value}>
       {children}
     </I18nContext.Provider>
   );
