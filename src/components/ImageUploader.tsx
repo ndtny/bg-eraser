@@ -5,22 +5,18 @@ import { useSession } from "next-auth/react";
 import { useDropzone } from "react-dropzone";
 import imageCompression from "browser-image-compression";
 import { Upload, Loader2, Image as ImageIcon, Lock, Images } from "lucide-react";
-
+import BatchUploader from "./BatchUploader";
 
 const FREE_DAILY_LIMIT = 3;
 
 interface ImageUploaderProps {
   onImageProcessed: (original: string, processed: string) => void;
   onError: (error: string) => void;
-  onBatchClick?: () => void;
-  showBatch?: boolean;
 }
 
 export default function ImageUploader({
   onImageProcessed,
   onError,
-  onBatchClick,
-  showBatch = true,
 }: ImageUploaderProps) {
   const { data: session } = useSession();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -29,12 +25,12 @@ export default function ImageUploader({
   const [limitReached, setLimitReached] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [isPro, setIsPro] = useState(false);
+  const [batchMode, setBatchMode] = useState(false);
 
-  // Fetch real usage from server on mount
   useEffect(() => {
     const email = session?.user?.email;
     const url = email ? `/api/usage?email=${encodeURIComponent(email)}` : "/api/usage";
-    
+
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
@@ -95,7 +91,6 @@ export default function ImageUploader({
 
       const result = await response.json();
 
-      // Update remaining from server response
       if (typeof result.remaining === "number") {
         setRemaining(result.remaining);
         setIsPro(result.isPro || false);
@@ -148,6 +143,22 @@ export default function ImageUploader({
     return (
       <div className="border-2 border-dashed border-[var(--border)] rounded-2xl p-12 text-center">
         <Loader2 className="w-8 h-8 text-[var(--muted)] animate-spin mx-auto" />
+      </div>
+    );
+  }
+
+  // Batch mode (Pro only)
+  if (batchMode && isPro) {
+    return (
+      <div>
+        <BatchUploader />
+        <button
+          type="button"
+          onClick={() => setBatchMode(false)}
+          className="mt-3 w-full px-4 py-2 text-sm text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+        >
+          ← Back to single upload
+        </button>
       </div>
     );
   }
@@ -245,7 +256,7 @@ export default function ImageUploader({
         )}
       </div>
       {!isProcessing && (
-        <div className={`mt-4 ${showBatch ? "grid grid-cols-2 gap-3" : ""}`}>
+        <div className="mt-4 grid grid-cols-2 gap-3">
           <button
             type="button"
             onClick={(e) => {
@@ -256,29 +267,24 @@ export default function ImageUploader({
           >
             Upload Image
           </button>
-          {showBatch && (
-            onBatchClick ? (
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onBatchClick();
-                }}
-                className="w-full px-6 py-4 bg-[var(--secondary)] text-[var(--foreground)] rounded-xl font-medium hover:bg-[var(--border)] transition-smooth text-lg flex items-center justify-center gap-2 border border-[var(--border)]"
-              >
-                <Images className="w-5 h-5" />
-                Batch Upload
-              </button>
-            ) : (
-              <a
-                href="/pricing"
-                className="w-full px-6 py-4 bg-[var(--secondary)] text-[var(--foreground)] rounded-xl font-medium hover:bg-[var(--border)] transition-smooth text-lg flex items-center justify-center gap-2 border border-[var(--border)]"
-              >
-                <Images className="w-5 h-5" />
-                Batch Upload
-                <span className="text-xs px-1.5 py-0.5 bg-[var(--primary)] text-white rounded-full font-bold">PRO</span>
-              </a>
-            )
+          {isPro ? (
+            <button
+              type="button"
+              onClick={() => setBatchMode(true)}
+              className="w-full px-6 py-4 bg-[var(--secondary)] text-[var(--foreground)] rounded-xl font-medium hover:bg-[var(--border)] transition-smooth text-lg flex items-center justify-center gap-2 border border-[var(--border)]"
+            >
+              <Images className="w-5 h-5" />
+              Batch Upload
+            </button>
+          ) : (
+            <a
+              href="/pricing"
+              className="w-full px-6 py-4 bg-[var(--secondary)] text-[var(--foreground)] rounded-xl font-medium hover:bg-[var(--border)] transition-smooth text-lg flex items-center justify-center gap-2 border border-[var(--border)]"
+            >
+              <Images className="w-5 h-5" />
+              Batch Upload
+              <span className="text-xs px-1.5 py-0.5 bg-[var(--primary)] text-white rounded-full font-bold">PRO</span>
+            </a>
           )}
         </div>
       )}

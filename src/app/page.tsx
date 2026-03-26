@@ -1,10 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { useState } from "react";
 import ImageUploader from "@/components/ImageUploader";
 import ImagePreview from "@/components/ImagePreview";
-import BatchUploader from "@/components/BatchUploader";
 import {
   Zap,
   Shield,
@@ -16,21 +14,9 @@ import {
 } from "lucide-react";
 
 export default function Home() {
-  const { data: session } = useSession();
   const [originalImage, setOriginalImage] = useState<string | null>(null);
   const [processedImage, setProcessedImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [isPro, setIsPro] = useState(false);
-  const [mode, setMode] = useState<"single" | "batch">("single");
-
-  useEffect(() => {
-    if (session?.user?.email) {
-      fetch(`/api/usage?email=${encodeURIComponent(session.user.email)}`)
-        .then((r) => r.json())
-        .then((d) => setIsPro(d.isPro || false))
-        .catch(() => {});
-    }
-  }, [session]);
 
   const handleImageProcessed = (original: string, processed: string) => {
     setOriginalImage(original);
@@ -83,14 +69,10 @@ export default function Home() {
               processedImage={processedImage}
               onReset={handleReset}
             />
-          ) : mode === "batch" ? (
-            <BatchUploader />
           ) : (
             <ImageUploader
               onImageProcessed={handleImageProcessed}
               onError={handleError}
-              onBatchClick={isPro ? () => setMode("batch") : undefined}
-              showBatch={true}
             />
           )}
         </div>
