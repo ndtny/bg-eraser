@@ -79,6 +79,9 @@ export const translations = {
     terms: "Terms of Service",
     copyright: "AI BG Eraser. All rights reserved.",
     footerDesc: "Free AI-powered background remover. Remove backgrounds from images instantly with one click.",
+    footerRemoveBgImage: "Remove Background from Image",
+    footerRemoveBgPhoto: "Remove Background from Photo",
+    footerTransparentBg: "Transparent Background Maker",
     
     // Preview
     original: "Original",
@@ -219,6 +222,9 @@ export const translations = {
     terms: "服务条款",
     copyright: "AI BG Eraser. 保留所有权利。",
     footerDesc: "免费 AI 背景去除工具，一键去除图片背景。",
+    footerRemoveBgImage: "图片去除背景",
+    footerRemoveBgPhoto: "照片去除背景",
+    footerTransparentBg: "透明背景制作",
     
     // Preview
     original: "原图",

@@ -28,9 +28,9 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-3 text-sm">{t("tools")}</h4>
             <ul className="space-y-2 text-sm text-[var(--muted)]">
-              <li><a href="/remove-background-from-image" className="hover:text-[var(--foreground)] transition-colors">Remove Background from Image</a></li>
-              <li><a href="/remove-background-from-photo" className="hover:text-[var(--foreground)] transition-colors">Remove Background from Photo</a></li>
-              <li><a href="/transparent-background-maker" className="hover:text-[var(--foreground)] transition-colors">Transparent Background Maker</a></li>
+              <li><a href="/remove-background-from-image" className="hover:text-[var(--foreground)] transition-colors">{t("footerRemoveBgImage")}</a></li>
+              <li><a href="/remove-background-from-photo" className="hover:text-[var(--foreground)] transition-colors">{t("footerRemoveBgPhoto")}</a></li>
+              <li><a href="/transparent-background-maker" className="hover:text-[var(--foreground)] transition-colors">{t("footerTransparentBg")}</a></li>
             </ul>
           </div>
           <div>
