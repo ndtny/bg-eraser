@@ -26,6 +26,7 @@ export default function ImageUploader({
   const [loaded, setLoaded] = useState(false);
   const [isPro, setIsPro] = useState(false);
   const [batchMode, setBatchMode] = useState(false);
+  const [batchInitialFiles, setBatchInitialFiles] = useState<File[]>([]);
 
   useEffect(() => {
     const email = session?.user?.email;
@@ -112,6 +113,18 @@ export default function ImageUploader({
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
+      if (acceptedFiles.length > 1) {
+        // Multiple files selected
+        if (isPro) {
+          // Pro: enter batch mode with these files
+          setBatchInitialFiles(acceptedFiles.slice(0, 20));
+          setBatchMode(true);
+        } else {
+          onError("Batch upload is a Pro feature. Upgrade to process up to 20 images at once.");
+        }
+        return;
+      }
+
       const file = acceptedFiles[0];
       if (file) {
         if (file.size > 20 * 1024 * 1024) {
@@ -122,7 +135,7 @@ export default function ImageUploader({
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [limitReached]
+    [limitReached, isPro]
   );
 
   const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
@@ -132,7 +145,7 @@ export default function ImageUploader({
       "image/png": [".png"],
       "image/webp": [".webp"],
     },
-    maxFiles: 1,
+    multiple: true,
     disabled: isProcessing || limitReached,
     noClick: false,
     noKeyboard: false,
@@ -151,10 +164,13 @@ export default function ImageUploader({
   if (batchMode && isPro) {
     return (
       <div>
-        <BatchUploader />
+        <BatchUploader initialFiles={batchInitialFiles} />
         <button
           type="button"
-          onClick={() => setBatchMode(false)}
+          onClick={() => {
+            setBatchMode(false);
+            setBatchInitialFiles([]);
+          }}
           className="mt-3 w-full px-4 py-2 text-sm text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
         >
           ← Back to single upload
@@ -245,11 +261,15 @@ export default function ImageUploader({
             <div>
               <p className="text-lg font-semibold">
                 {isDragActive
-                  ? "Drop your image here"
-                  : "Upload an image to remove background"}
+                  ? "Drop your image(s) here"
+                  : isPro
+                    ? "Upload image(s) to remove background"
+                    : "Upload an image to remove background"}
               </p>
               <p className="text-sm text-[var(--muted)] mt-1">
-                Drag &amp; drop or click to browse · JPG, PNG, WebP · Max 20MB
+                {isPro
+                  ? "Drag & drop or click · Select multiple for batch · JPG, PNG, WebP · Max 20MB"
+                  : "Drag & drop or click to browse · JPG, PNG, WebP · Max 20MB"}
               </p>
             </div>
           </div>

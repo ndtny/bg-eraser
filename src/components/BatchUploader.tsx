@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useDropzone } from "react-dropzone";
 import imageCompression from "browser-image-compression";
@@ -15,11 +15,30 @@ interface BatchItem {
   error?: string;
 }
 
-export default function BatchUploader() {
+interface BatchUploaderProps {
+  initialFiles?: File[];
+}
+
+export default function BatchUploader({ initialFiles }: BatchUploaderProps = {}) {
   const { data: session } = useSession();
   const [items, setItems] = useState<BatchItem[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [processedCount, setProcessedCount] = useState(0);
+  const [initialized, setInitialized] = useState(false);
+
+  // Load initial files from parent (e.g. dropped onto single uploader)
+  useEffect(() => {
+    if (initialized || !initialFiles || initialFiles.length === 0) return;
+    setInitialized(true);
+    const newItems: BatchItem[] = initialFiles.slice(0, 20).map((file) => ({
+      id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+      file,
+      originalUrl: URL.createObjectURL(file),
+      processedImage: null,
+      status: "pending" as const,
+    }));
+    setItems(newItems);
+  }, [initialFiles, initialized]);
 
   const processOne = async (item: BatchItem): Promise<BatchItem> => {
     try {
