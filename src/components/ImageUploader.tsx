@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useDropzone } from "react-dropzone";
 import imageCompression from "browser-image-compression";
 import { Upload, Loader2, Image as ImageIcon, Lock } from "lucide-react";
+import { useI18n } from "@/i18n/context";
 
 const FREE_DAILY_LIMIT = 3;
 
@@ -18,6 +19,7 @@ export default function ImageUploader({
   onError,
 }: ImageUploaderProps) {
   const { data: session } = useSession();
+  const { t } = useI18n();
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState("");
   const [remaining, setRemaining] = useState(FREE_DAILY_LIMIT);
@@ -47,7 +49,7 @@ export default function ImageUploader({
     if (limitReached) return;
 
     setIsProcessing(true);
-    setProgress("Compressing image...");
+    setProgress(t("compressing"));
 
     try {
       const compressedFile = await imageCompression(file, {
@@ -58,7 +60,7 @@ export default function ImageUploader({
       });
 
       const originalUrl = URL.createObjectURL(file);
-      setProgress("Removing background...");
+      setProgress(t("removing"));
 
       const reader = new FileReader();
       const base64Promise = new Promise<string>((resolve) => {
@@ -156,17 +158,16 @@ export default function ImageUploader({
             <Lock className="w-8 h-8 text-orange-500" />
           </div>
           <div>
-            <p className="text-lg font-semibold">Daily free limit reached</p>
+            <p className="text-lg font-semibold">{t("limitReached")}</p>
             <p className="text-sm text-[var(--muted)] mt-1">
-              You&apos;ve used all {FREE_DAILY_LIMIT} free removals for today.
-              Upgrade to Pro for unlimited access.
+              {t("limitDesc")}
             </p>
           </div>
           <div className="mt-2 px-6 py-3 bg-[var(--primary)]/20 text-[var(--primary)] rounded-xl font-medium border border-[var(--primary)]/30">
-            Pro Plan — Coming Soon
+            {t("comingSoon")}
           </div>
           <p className="text-xs text-[var(--muted)]">
-            Free uses reset daily at midnight UTC
+            {t("resetNote")}
           </p>
         </div>
       </div>
@@ -179,18 +180,18 @@ export default function ImageUploader({
       {isPro ? (
         <div className="mb-3 text-sm text-center">
           <span className="inline-flex items-center gap-1 px-2 py-1 bg-indigo-50 text-[var(--primary)] rounded-full font-medium">
-            ✨ Pro — Unlimited
+            ✨ {t("proUnlimited")}
           </span>
         </div>
       ) : (
         <div className="mb-3 text-sm text-[var(--muted)] text-center">
           <span className="font-medium text-[var(--foreground)]">{remaining}</span>
-          {" "}of {FREE_DAILY_LIMIT} free uses remaining today
+          {" "}{t("freeRemaining")}
           {remaining <= 1 && (
             <span className="ml-2">
               ·{" "}
               <a href="/pricing" className="text-[var(--primary)] underline">
-                Upgrade for unlimited
+                {t("upgradeUnlimited")}
               </a>
             </span>
           )}
@@ -214,7 +215,7 @@ export default function ImageUploader({
             <div>
               <p className="text-lg font-semibold">{progress}</p>
               <p className="text-sm text-[var(--muted)] mt-1">
-                This usually takes 5-10 seconds
+                {t("processingTime")}
               </p>
             </div>
           </div>
@@ -230,11 +231,11 @@ export default function ImageUploader({
             <div>
               <p className="text-lg font-semibold">
                 {isDragActive
-                  ? "Drop your image here"
-                  : "Upload an image to remove background"}
+                  ? t("uploadDragActive")
+                  : t("uploadTitle")}
               </p>
               <p className="text-sm text-[var(--muted)] mt-1">
-                Drag & drop or click to browse · JPG, PNG, WebP · Max 20MB
+                {t("uploadHint")}
               </p>
             </div>
           </div>
@@ -249,7 +250,7 @@ export default function ImageUploader({
           }}
           className="mt-4 w-full px-6 py-4 bg-[var(--primary)] text-white rounded-xl font-medium hover:bg-[var(--primary-hover)] transition-smooth text-lg"
         >
-          Upload Image
+          {t("uploadButton")}
         </button>
       )}
     </div>

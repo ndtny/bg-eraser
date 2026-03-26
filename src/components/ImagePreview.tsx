@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Download, RotateCcw, Eye, EyeOff } from "lucide-react";
+import { useI18n } from "@/i18n/context";
 
 interface ImagePreviewProps {
   originalImage: string;
@@ -14,6 +15,7 @@ export default function ImagePreview({
   processedImage,
   onReset,
 }: ImagePreviewProps) {
+  const { t } = useI18n();
   const [showOriginal, setShowOriginal] = useState(false);
   const [sliderPosition, setSliderPosition] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
@@ -106,10 +108,10 @@ export default function ImagePreview({
 
         {/* Labels */}
         <div className="absolute top-3 left-3 bg-black/60 text-white text-xs px-2 py-1 rounded-md">
-          Original
+          {t("original")}
         </div>
         <div className="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-md">
-          Removed
+          {t("processed")}
         </div>
       </div>
 
@@ -120,7 +122,7 @@ export default function ImagePreview({
           className="flex items-center gap-2 px-6 py-3 bg-[var(--primary)] text-white rounded-xl font-medium hover:bg-[var(--primary-hover)] transition-smooth"
         >
           <Download className="w-5 h-5" />
-          Download PNG
+          {t("download")} PNG
         </button>
 
         <button
@@ -132,7 +134,7 @@ export default function ImagePreview({
           ) : (
             <Eye className="w-5 h-5" />
           )}
-          {showOriginal ? "Show Result" : "Show Original"}
+          {showOriginal ? t("processed") : t("original")}
         </button>
 
         <button
@@ -140,7 +142,7 @@ export default function ImagePreview({
           className="flex items-center gap-2 px-6 py-3 bg-[var(--secondary)] rounded-xl font-medium hover:bg-[var(--border)] transition-smooth"
         >
           <RotateCcw className="w-5 h-5" />
-          New Image
+          {t("processAnother")}
         </button>
       </div>
 

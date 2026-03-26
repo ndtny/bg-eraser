@@ -86,6 +86,55 @@ export const translations = {
     download: "Download",
     processAnother: "Process Another Image",
     
+    // How It Works
+    howItWorks: "How It Works",
+    step1Title: "Upload",
+    step1Desc: "Upload any image — JPG, PNG, or WebP. Drag & drop or click to browse.",
+    step2Title: "AI Processes",
+    step2Desc: "Our AI model analyzes your image and removes the background in seconds.",
+    step3Title: "Download",
+    step3Desc: "Download your image with a transparent background as a high-quality PNG.",
+    
+    // Badge
+    badgeText: "AI-Powered · 3 Free Uses Daily · No Signup",
+    trustPrivate: "100% Private",
+    trustSpeed: "Under 10s",
+    trustQuality: "High Quality PNG",
+    
+    // Any Image / Works Everywhere
+    featureAnyImage: "Any Image Type",
+    featureAnyImageDesc: "Works with photos, product images, portraits, logos, graphics, and more.",
+    featureEverywhere: "Works Everywhere",
+    featureEverywhereDesc: "Use on desktop, tablet, or mobile. No software installation needed.",
+    
+    // Marketing use case
+    marketing: "Marketing",
+    marketingDesc: "Professional images for ads, banners, and materials.",
+    
+    // Use cases subtitle
+    useCasesSubtitle: "Whether you're an e-commerce seller, designer, or content creator — AI BG Eraser has you covered.",
+    
+    // Comparison
+    compTitle: "Why Not Just Use remove.bg?",
+    compSubtitle: "We offer the same AI quality at a fraction of the price — or free.",
+    compFeature: "Feature",
+    compFreeUses: "Free uses",
+    compProPrice: "Pro price",
+    compAIQuality: "AI Quality",
+    compSignup: "Signup required",
+    compSpeed: "Speed",
+    compUs3: "3/day",
+    compThem1: "1/month",
+    compUsPrice: "$9.90/mo",
+    compThemPrice: "$29/mo",
+    compNo: "No",
+    compYes: "Yes",
+    compUnder10: "< 10s",
+    
+    // FAQ extra
+    faq5Q: "Can I use AI BG Eraser for commercial purposes?",
+    faq5A: "Absolutely! You can use the processed images for any purpose, including commercial use.",
+
     // Errors
     fileTooLarge: "File size must be less than 20MB",
     invalidImage: "Invalid image",
@@ -177,6 +226,55 @@ export const translations = {
     download: "下载",
     processAnother: "处理另一张图片",
     
+    // How It Works
+    howItWorks: "使用方法",
+    step1Title: "上传",
+    step1Desc: "上传任意图片 — 支持 JPG、PNG、WebP。拖放或点击浏览。",
+    step2Title: "AI 处理",
+    step2Desc: "AI 模型分析图片，几秒钟内去除背景。",
+    step3Title: "下载",
+    step3Desc: "下载透明背景的高质量 PNG 图片。",
+    
+    // Badge
+    badgeText: "AI 驱动 · 每天 3 次免费 · 无需注册",
+    trustPrivate: "100% 隐私安全",
+    trustSpeed: "10 秒内完成",
+    trustQuality: "高清 PNG 输出",
+    
+    // Any Image / Works Everywhere
+    featureAnyImage: "支持各类图片",
+    featureAnyImageDesc: "适用于照片、商品图、人像、Logo、图形等各种类型。",
+    featureEverywhere: "全平台支持",
+    featureEverywhereDesc: "电脑、平板、手机均可使用，无需安装任何软件。",
+    
+    // Marketing use case
+    marketing: "营销",
+    marketingDesc: "专业的广告、横幅和营销素材图片。",
+    
+    // Use cases subtitle
+    useCasesSubtitle: "无论你是电商卖家、设计师还是内容创作者，AI BG Eraser 都能满足你的需求。",
+    
+    // Comparison
+    compTitle: "为什么不用 remove.bg？",
+    compSubtitle: "同等 AI 质量，价格只是其零头——甚至免费。",
+    compFeature: "功能",
+    compFreeUses: "免费次数",
+    compProPrice: "Pro 价格",
+    compAIQuality: "AI 质量",
+    compSignup: "需要注册",
+    compSpeed: "速度",
+    compUs3: "3次/天",
+    compThem1: "1次/月",
+    compUsPrice: "$9.90/月",
+    compThemPrice: "$29/月",
+    compNo: "不需要",
+    compYes: "需要",
+    compUnder10: "< 10秒",
+    
+    // FAQ extra
+    faq5Q: "可以用于商业用途吗？",
+    faq5A: "当然可以！处理后的图片可用于任何用途，包括商业用途。",
+
     // Errors
     fileTooLarge: "文件大小不能超过 20MB",
     invalidImage: "无效图片",
