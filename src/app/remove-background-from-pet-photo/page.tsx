@@ -2,47 +2,44 @@ import type { Metadata } from "next";
 import LandingPage from "@/components/LandingPage";
 
 export const metadata: Metadata = {
-  title: "Remove Background from Pet Photo Free Online | AI BG Eraser",
-  description: "Remove background from pet photos free. AI handles fur, whiskers, complex edges. Perfect for pet portraits. No signup needed.",
+  title: "Remove Background from Pet Photos — Dogs, Cats & More | AI BG Eraser",
+  description: "Remove backgrounds from pet photos with AI. Handles fur edges perfectly. Great for pet portraits, pet products, and social media.",
+  keywords: ["remove background pet photo","dog photo background remover","cat photo transparent background","pet portrait background removal"],
   alternates: { canonical: "/remove-background-from-pet-photo" },
 };
 
 export default function Page() {
   return (
     <LandingPage
-      title="Remove Background from Pet Photo"
-      subtitle="AI Background Removal for Pet & Animal Photos"
-      description="Remove backgrounds from pet photos with AI that handles fur, whiskers, and complex animal features. Perfect for pet portraits and merchandise."
+      title="Remove Background from Pet Photos"
+      subtitle="Remove backgrounds from pet photos with AI. Handles fur edges perfectly. Great for pet portraits, pet products, and social media."
+      description="Pet photos have the most challenging edges — fur, whiskers, fluffy tails. AI BG Eraser's AI model handles these complex edges beautifully, preserving every strand of fur while cleanly removing the background. Perfect for pet portraits, product listings, and social media posts."
       features={[
         {
-                "title": "Fur Detection",
-                "desc": "Advanced AI handles fluffy fur, whiskers, and complex animal textures with precision."
+                "title": "AI-Powered",
+                "desc": "Uses BRIA RMBG-2.0 AI model for precise background detection and removal."
         },
         {
-                "title": "All Animals",
-                "desc": "Works with dogs, cats, birds, rabbits, horses, and virtually any animal."
+                "title": "Instant Results",
+                "desc": "Get your transparent PNG in seconds, not minutes."
         },
         {
-                "title": "Pet Merchandise",
-                "desc": "Create pet portraits for custom mugs, t-shirts, phone cases, and other merchandise."
+                "title": "Free to Use",
+                "desc": "3 free removals per day. No signup required."
         },
         {
-                "title": "Social Sharing",
-                "desc": "Make fun pet photos with transparent backgrounds for stickers and social media."
+                "title": "High Quality",
+                "desc": "Clean edges, no artifacts. Production-ready output."
         }
 ]}
       faqs={[
         {
-                "q": "Can AI handle fluffy fur?",
-                "a": "Yes! Our AI is trained on animal images and handles fur, feathers, and whiskers with high accuracy."
+                "q": "Can it handle fluffy fur?",
+                "a": "Yes! The BRIA RMBG-2.0 AI model excels at complex edges like fur, hair, and feathers."
         },
         {
                 "q": "Does it work with multiple pets in one photo?",
-                "a": "Yes, our AI detects all subjects in the image, so multiple pets will be kept while the background is removed."
-        },
-        {
-                "q": "Can I use this for pet merchandise?",
-                "a": "Absolutely! Download the transparent PNG and use it for custom merchandise like mugs, t-shirts, and phone cases."
+                "a": "Yes. The AI detects all foreground subjects and removes only the background."
         }
 ]}
     />
