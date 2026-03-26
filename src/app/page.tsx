@@ -90,6 +90,7 @@ export default function Home() {
               onImageProcessed={handleImageProcessed}
               onError={handleError}
               onBatchClick={isPro ? () => setMode("batch") : undefined}
+              showBatch={true}
             />
           )}
         </div>

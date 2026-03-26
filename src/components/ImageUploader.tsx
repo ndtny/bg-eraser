@@ -13,12 +13,14 @@ interface ImageUploaderProps {
   onImageProcessed: (original: string, processed: string) => void;
   onError: (error: string) => void;
   onBatchClick?: () => void;
+  showBatch?: boolean;
 }
 
 export default function ImageUploader({
   onImageProcessed,
   onError,
   onBatchClick,
+  showBatch = true,
 }: ImageUploaderProps) {
   const { data: session } = useSession();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -243,7 +245,7 @@ export default function ImageUploader({
         )}
       </div>
       {!isProcessing && (
-        <div className={`mt-4 ${onBatchClick ? "grid grid-cols-2 gap-3" : ""}`}>
+        <div className={`mt-4 ${showBatch ? "grid grid-cols-2 gap-3" : ""}`}>
           <button
             type="button"
             onClick={(e) => {
@@ -254,18 +256,29 @@ export default function ImageUploader({
           >
             Upload Image
           </button>
-          {onBatchClick && (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onBatchClick();
-              }}
-              className="w-full px-6 py-4 bg-[var(--secondary)] text-[var(--foreground)] rounded-xl font-medium hover:bg-[var(--border)] transition-smooth text-lg flex items-center justify-center gap-2 border border-[var(--border)]"
-            >
-              <Images className="w-5 h-5" />
-              Batch Upload
-            </button>
+          {showBatch && (
+            onBatchClick ? (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onBatchClick();
+                }}
+                className="w-full px-6 py-4 bg-[var(--secondary)] text-[var(--foreground)] rounded-xl font-medium hover:bg-[var(--border)] transition-smooth text-lg flex items-center justify-center gap-2 border border-[var(--border)]"
+              >
+                <Images className="w-5 h-5" />
+                Batch Upload
+              </button>
+            ) : (
+              <a
+                href="/pricing"
+                className="w-full px-6 py-4 bg-[var(--secondary)] text-[var(--foreground)] rounded-xl font-medium hover:bg-[var(--border)] transition-smooth text-lg flex items-center justify-center gap-2 border border-[var(--border)]"
+              >
+                <Images className="w-5 h-5" />
+                Batch Upload
+                <span className="text-xs px-1.5 py-0.5 bg-[var(--primary)] text-white rounded-full font-bold">PRO</span>
+              </a>
+            )
           )}
         </div>
       )}
