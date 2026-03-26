@@ -10,7 +10,6 @@ import {
   Shield,
   Sparkles,
   Image as ImageIcon,
-  Images,
   MonitorSmartphone,
   Download,
   ArrowRight,
@@ -69,82 +68,29 @@ export default function Home() {
           Perfect for product photos, portraits, logos, and more. No signup required.
         </p>
 
-        {/* Mode Toggle */}
-        <div className="flex items-center justify-center gap-1 mb-6 bg-[var(--secondary)] rounded-lg p-1 max-w-xs mx-auto">
-          <button
-            onClick={() => setMode("single")}
-            className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-              mode === "single"
-                ? "bg-[var(--background)] text-[var(--foreground)] shadow-sm"
-                : "text-[var(--muted)] hover:text-[var(--foreground)]"
-            }`}
-          >
-            Single
-          </button>
-          <button
-            onClick={() => setMode("batch")}
-            className={`flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors relative ${
-              mode === "batch"
-                ? "bg-[var(--background)] text-[var(--foreground)] shadow-sm"
-                : "text-[var(--muted)] hover:text-[var(--foreground)]"
-            }`}
-          >
-            Batch
-            {!isPro && (
-              <span className="ml-1.5 text-xs px-1.5 py-0.5 bg-[var(--primary)] text-white rounded-full font-bold">PRO</span>
-            )}
-          </button>
-        </div>
-
         {/* Upload / Preview Area */}
         <div className="max-w-2xl mx-auto">
-          {mode === "batch" ? (
-            isPro ? (
-              <BatchUploader />
-            ) : (
-              <div className="border-2 border-dashed border-[var(--border)] rounded-2xl p-12 text-center">
-                <div className="flex flex-col items-center gap-4">
-                  <div className="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center">
-                    <Images className="w-8 h-8 text-[var(--primary)]" />
-                  </div>
-                  <div>
-                    <p className="text-lg font-semibold">Batch Processing — Pro Feature</p>
-                    <p className="text-sm text-[var(--muted)] mt-1">
-                      Process up to 20 images at once with a Pro plan.
-                    </p>
-                  </div>
-                  <a
-                    href="/pricing"
-                    className="mt-2 px-6 py-3 bg-[var(--primary)] text-white rounded-xl font-medium hover:bg-[var(--primary-hover)] transition-smooth inline-flex items-center gap-2"
-                  >
-                    <Sparkles className="w-4 h-4" />
-                    View Pricing
-                  </a>
-                </div>
-              </div>
-            )
-          ) : (
-            <>
-              {error && (
-                <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-start gap-2">
-                  <span className="shrink-0">⚠️</span>
-                  {error}
-                </div>
-              )}
+          {error && (
+            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-start gap-2">
+              <span className="shrink-0">⚠️</span>
+              {error}
+            </div>
+          )}
 
-              {processedImage && originalImage ? (
-                <ImagePreview
-                  originalImage={originalImage}
-                  processedImage={processedImage}
-                  onReset={handleReset}
-                />
-              ) : (
-                <ImageUploader
-                  onImageProcessed={handleImageProcessed}
-                  onError={handleError}
-                />
-              )}
-            </>
+          {processedImage && originalImage ? (
+            <ImagePreview
+              originalImage={originalImage}
+              processedImage={processedImage}
+              onReset={handleReset}
+            />
+          ) : mode === "batch" ? (
+            <BatchUploader />
+          ) : (
+            <ImageUploader
+              onImageProcessed={handleImageProcessed}
+              onError={handleError}
+              onBatchClick={isPro ? () => setMode("batch") : undefined}
+            />
           )}
         </div>
 

@@ -4,7 +4,7 @@ import { useCallback, useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useDropzone } from "react-dropzone";
 import imageCompression from "browser-image-compression";
-import { Upload, Loader2, Image as ImageIcon, Lock } from "lucide-react";
+import { Upload, Loader2, Image as ImageIcon, Lock, Images } from "lucide-react";
 
 
 const FREE_DAILY_LIMIT = 3;
@@ -12,11 +12,13 @@ const FREE_DAILY_LIMIT = 3;
 interface ImageUploaderProps {
   onImageProcessed: (original: string, processed: string) => void;
   onError: (error: string) => void;
+  onBatchClick?: () => void;
 }
 
 export default function ImageUploader({
   onImageProcessed,
   onError,
+  onBatchClick,
 }: ImageUploaderProps) {
   const { data: session } = useSession();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -241,16 +243,31 @@ export default function ImageUploader({
         )}
       </div>
       {!isProcessing && (
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            open();
-          }}
-          className="mt-4 w-full px-6 py-4 bg-[var(--primary)] text-white rounded-xl font-medium hover:bg-[var(--primary-hover)] transition-smooth text-lg"
-        >
-          Upload Image
-        </button>
+        <div className={`mt-4 ${onBatchClick ? "grid grid-cols-2 gap-3" : ""}`}>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              open();
+            }}
+            className="w-full px-6 py-4 bg-[var(--primary)] text-white rounded-xl font-medium hover:bg-[var(--primary-hover)] transition-smooth text-lg"
+          >
+            Upload Image
+          </button>
+          {onBatchClick && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onBatchClick();
+              }}
+              className="w-full px-6 py-4 bg-[var(--secondary)] text-[var(--foreground)] rounded-xl font-medium hover:bg-[var(--border)] transition-smooth text-lg flex items-center justify-center gap-2 border border-[var(--border)]"
+            >
+              <Images className="w-5 h-5" />
+              Batch Upload
+            </button>
+          )}
+        </div>
       )}
     </div>
   );
