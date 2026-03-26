@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { useDropzone } from "react-dropzone";
 import imageCompression from "browser-image-compression";
 import { Upload, Loader2, Image as ImageIcon, Lock } from "lucide-react";
-import { useI18n } from "@/i18n/context";
+
 
 const FREE_DAILY_LIMIT = 3;
 
@@ -19,7 +19,6 @@ export default function ImageUploader({
   onError,
 }: ImageUploaderProps) {
   const { data: session } = useSession();
-  const { t } = useI18n();
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState("");
   const [remaining, setRemaining] = useState(FREE_DAILY_LIMIT);
@@ -49,7 +48,7 @@ export default function ImageUploader({
     if (limitReached) return;
 
     setIsProcessing(true);
-    setProgress(t("compressing"));
+    setProgress("Compressing image...");
 
     try {
       const compressedFile = await imageCompression(file, {
@@ -60,7 +59,7 @@ export default function ImageUploader({
       });
 
       const originalUrl = URL.createObjectURL(file);
-      setProgress(t("removing"));
+      setProgress("Removing background...");
 
       const reader = new FileReader();
       const base64Promise = new Promise<string>((resolve) => {
@@ -81,13 +80,13 @@ export default function ImageUploader({
       if (response.status === 429) {
         setLimitReached(true);
         setRemaining(0);
-        onError(t("limitDesc"));
+        onError("Daily free limit reached. Upgrade to Pro for unlimited access.");
         return;
       }
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || t("processFailed"));
+        throw new Error(errorData.error || "Failed to remove background");
       }
 
       const result = await response.json();
@@ -104,7 +103,7 @@ export default function ImageUploader({
       onImageProcessed(originalUrl, result.image);
     } catch (err) {
       onError(
-        err instanceof Error ? err.message : t("processFailed")
+        err instanceof Error ? err.message : "An unexpected error occurred"
       );
     } finally {
       setIsProcessing(false);
@@ -117,14 +116,14 @@ export default function ImageUploader({
       const file = acceptedFiles[0];
       if (file) {
         if (file.size > 20 * 1024 * 1024) {
-          onError(t("fileTooLarge"));
+          onError("File size must be less than 20MB");
           return;
         }
         processImage(file);
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [limitReached, t]
+    [limitReached]
   );
 
   const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
@@ -158,16 +157,16 @@ export default function ImageUploader({
             <Lock className="w-8 h-8 text-orange-500" />
           </div>
           <div>
-            <p className="text-lg font-semibold">{t("limitReached")}</p>
+            <p className="text-lg font-semibold">Daily free limit reached</p>
             <p className="text-sm text-[var(--muted)] mt-1">
-              {t("limitDesc")}
+              You&apos;ve used all 3 free removals for today. Upgrade to Pro for unlimited access.
             </p>
           </div>
           <div className="mt-2 px-6 py-3 bg-[var(--primary)]/20 text-[var(--primary)] rounded-xl font-medium border border-[var(--primary)]/30">
-            {t("comingSoon")}
+            Pro Plan — Coming Soon
           </div>
           <p className="text-xs text-[var(--muted)]">
-            {t("resetNote")}
+            Free uses reset daily at midnight UTC
           </p>
         </div>
       </div>
@@ -180,18 +179,18 @@ export default function ImageUploader({
       {isPro ? (
         <div className="mb-3 text-sm text-center">
           <span className="inline-flex items-center gap-1 px-2 py-1 bg-indigo-50 text-[var(--primary)] rounded-full font-medium">
-            ✨ {t("proUnlimited")}
+            ✨ Pro — Unlimited
           </span>
         </div>
       ) : (
         <div className="mb-3 text-sm text-[var(--muted)] text-center">
           <span className="font-medium text-[var(--foreground)]">{remaining}</span>
-          {" "}{t("freeRemaining")}
+          {" "}of 3 free uses remaining today
           {remaining <= 1 && (
             <span className="ml-2">
               ·{" "}
               <a href="/pricing" className="text-[var(--primary)] underline">
-                {t("upgradeUnlimited")}
+                Upgrade for unlimited
               </a>
             </span>
           )}
@@ -215,7 +214,7 @@ export default function ImageUploader({
             <div>
               <p className="text-lg font-semibold">{progress}</p>
               <p className="text-sm text-[var(--muted)] mt-1">
-                {t("processingTime")}
+                This usually takes 5-10 seconds
               </p>
             </div>
           </div>
@@ -231,11 +230,11 @@ export default function ImageUploader({
             <div>
               <p className="text-lg font-semibold">
                 {isDragActive
-                  ? t("uploadDragActive")
-                  : t("uploadTitle")}
+                  ? "Drop your image here"
+                  : "Upload an image to remove background"}
               </p>
               <p className="text-sm text-[var(--muted)] mt-1">
-                {t("uploadHint")}
+                Drag &amp; drop or click to browse · JPG, PNG, WebP · Max 20MB
               </p>
             </div>
           </div>
@@ -250,7 +249,7 @@ export default function ImageUploader({
           }}
           className="mt-4 w-full px-6 py-4 bg-[var(--primary)] text-white rounded-xl font-medium hover:bg-[var(--primary-hover)] transition-smooth text-lg"
         >
-          {t("uploadButton")}
+          Upload Image
         </button>
       )}
     </div>

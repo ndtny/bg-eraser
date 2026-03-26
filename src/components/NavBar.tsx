@@ -1,13 +1,9 @@
 "use client";
 
 import AuthButton from "./AuthButton";
-import LocaleSwitcher from "./LocaleSwitcher";
 import ThemeSwitcher from "./ThemeSwitcher";
-import { useI18n } from "@/i18n/context";
 
 export default function NavBar() {
-  const { t } = useI18n();
-
   return (
     <header className="sticky top-0 z-50 bg-[var(--background)]/80 backdrop-blur-lg border-b border-[var(--border)]">
       <nav className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
@@ -29,17 +25,16 @@ export default function NavBar() {
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="hidden md:flex items-center gap-6 text-sm text-[var(--muted)]">
             <a href="/#features" className="hover:text-[var(--foreground)] transition-colors">
-              {t("features")}
+              Features
             </a>
             <a href="/pricing" className="hover:text-[var(--foreground)] transition-colors">
-              {t("pricing")}
+              Pricing
             </a>
             <a href="/#faq" className="hover:text-[var(--foreground)] transition-colors">
-              {t("faq")}
+              FAQ
             </a>
           </div>
           <div className="flex items-center gap-2">
-            <LocaleSwitcher />
             <ThemeSwitcher />
             <AuthButton />
           </div>

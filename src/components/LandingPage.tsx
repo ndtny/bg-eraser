@@ -3,7 +3,7 @@
 import { useState } from "react";
 import ImageUploader from "./ImageUploader";
 import ImagePreview from "./ImagePreview";
-import { useI18n } from "@/i18n/context";
+
 
 interface LandingPageProps {
   title: string;
@@ -20,7 +20,6 @@ export default function LandingPage({
   features,
   faqs,
 }: LandingPageProps) {
-  const { t } = useI18n();
   const [originalImage, setOriginalImage] = useState<string | null>(null);
   const [processedImage, setProcessedImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -88,7 +87,7 @@ export default function LandingPage({
       <section className="bg-[var(--secondary)] py-16">
         <div className="max-w-3xl mx-auto px-4">
           <h2 className="text-2xl font-bold text-center mb-8">
-            {t("faqTitle")}
+            Frequently Asked Questions
           </h2>
           <div className="space-y-4">
             {faqs.map((faq) => (

@@ -1,10 +1,6 @@
 "use client";
 
-import { useI18n } from "@/i18n/context";
-
 export default function Footer() {
-  const { t } = useI18n();
-
   return (
     <footer className="border-t border-[var(--border)] py-12 mt-20 bg-[var(--secondary)]">
       <div className="max-w-6xl mx-auto px-4">
@@ -23,34 +19,36 @@ export default function Footer() {
                 <span className="text-[var(--primary)]">AI</span> BG Eraser
               </span>
             </div>
-            <p className="text-sm text-[var(--muted)]">{t("footerDesc")}</p>
+            <p className="text-sm text-[var(--muted)]">
+              Free AI-powered background remover. Remove backgrounds from images instantly with one click.
+            </p>
           </div>
           <div>
-            <h4 className="font-semibold mb-3 text-sm">{t("tools")}</h4>
+            <h4 className="font-semibold mb-3 text-sm">Tools</h4>
             <ul className="space-y-2 text-sm text-[var(--muted)]">
-              <li><a href="/remove-background-from-image" className="hover:text-[var(--foreground)] transition-colors">{t("footerRemoveBgImage")}</a></li>
-              <li><a href="/remove-background-from-photo" className="hover:text-[var(--foreground)] transition-colors">{t("footerRemoveBgPhoto")}</a></li>
-              <li><a href="/transparent-background-maker" className="hover:text-[var(--foreground)] transition-colors">{t("footerTransparentBg")}</a></li>
+              <li><a href="/remove-background-from-image" className="hover:text-[var(--foreground)] transition-colors">Remove Background from Image</a></li>
+              <li><a href="/remove-background-from-photo" className="hover:text-[var(--foreground)] transition-colors">Remove Background from Photo</a></li>
+              <li><a href="/transparent-background-maker" className="hover:text-[var(--foreground)] transition-colors">Transparent Background Maker</a></li>
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold mb-3 text-sm">{t("useCases")}</h4>
+            <h4 className="font-semibold mb-3 text-sm">Use Cases</h4>
             <ul className="space-y-2 text-sm text-[var(--muted)]">
-              <li><a href="/product-photo-background-remover" className="hover:text-[var(--foreground)] transition-colors">{t("productPhotos")}</a></li>
-              <li><a href="/remove-white-background" className="hover:text-[var(--foreground)] transition-colors">{t("removeWhiteBg")}</a></li>
-              <li><a href="/pricing" className="hover:text-[var(--foreground)] transition-colors">{t("pricing")}</a></li>
+              <li><a href="/product-photo-background-remover" className="hover:text-[var(--foreground)] transition-colors">Product Photos</a></li>
+              <li><a href="/remove-white-background" className="hover:text-[var(--foreground)] transition-colors">Remove White Background</a></li>
+              <li><a href="/pricing" className="hover:text-[var(--foreground)] transition-colors">Pricing</a></li>
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold mb-3 text-sm">{t("legal")}</h4>
+            <h4 className="font-semibold mb-3 text-sm">Legal</h4>
             <ul className="space-y-2 text-sm text-[var(--muted)]">
-              <li><a href="/privacy" className="hover:text-[var(--foreground)] transition-colors">{t("privacy")}</a></li>
-              <li><a href="/terms" className="hover:text-[var(--foreground)] transition-colors">{t("terms")}</a></li>
+              <li><a href="/privacy" className="hover:text-[var(--foreground)] transition-colors">Privacy Policy</a></li>
+              <li><a href="/terms" className="hover:text-[var(--foreground)] transition-colors">Terms of Service</a></li>
             </ul>
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-[var(--border)] text-center text-sm text-[var(--muted)]">
-          © {new Date().getFullYear()} {t("copyright")}
+          © {new Date().getFullYear()} AI BG Eraser. All rights reserved.
         </div>
       </div>
     </footer>

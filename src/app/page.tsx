@@ -3,7 +3,6 @@
 import { useState } from "react";
 import ImageUploader from "@/components/ImageUploader";
 import ImagePreview from "@/components/ImagePreview";
-import { useI18n } from "@/i18n/context";
 import {
   Zap,
   Shield,
@@ -15,7 +14,6 @@ import {
 } from "lucide-react";
 
 export default function Home() {
-  const { t } = useI18n();
   const [originalImage, setOriginalImage] = useState<string | null>(null);
   const [processedImage, setProcessedImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -42,17 +40,18 @@ export default function Home() {
       <section className="max-w-4xl mx-auto px-4 pt-12 sm:pt-20 pb-12 text-center animate-fade-in-up">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-indigo-50 text-[var(--primary)] rounded-full text-sm font-medium mb-6 border border-indigo-100">
           <Sparkles className="w-4 h-4" />
-          {t("badgeText")}
+          AI-Powered · 3 Free Uses Daily · No Signup
         </div>
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight mb-6 leading-[1.1]">
-          {t("heroTitle")}
+          Remove Image Background
           <br />
           <span className="bg-gradient-to-r from-[var(--primary)] to-purple-600 bg-clip-text text-transparent">
-            {t("heroTitleAccent")}
+            in Seconds
           </span>
         </h1>
         <p className="text-base sm:text-lg text-[var(--muted)] max-w-2xl mx-auto mb-10 leading-relaxed">
-          {t("heroSubtitle")}
+          Upload your image and our AI will instantly remove the background.
+          Perfect for product photos, portraits, logos, and more. No signup required.
         </p>
 
         {/* Upload / Preview Area */}
@@ -81,13 +80,13 @@ export default function Home() {
         {/* Trust badges */}
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs text-[var(--muted)]">
           <span className="flex items-center gap-1.5">
-            <Shield className="w-3.5 h-3.5 text-green-500" /> {t("trustPrivate")}
+            <Shield className="w-3.5 h-3.5 text-green-500" /> 100% Private
           </span>
           <span className="flex items-center gap-1.5">
-            <Zap className="w-3.5 h-3.5 text-yellow-500" /> {t("trustSpeed")}
+            <Zap className="w-3.5 h-3.5 text-yellow-500" /> Under 10s
           </span>
           <span className="flex items-center gap-1.5">
-            <Download className="w-3.5 h-3.5 text-blue-500" /> {t("trustQuality")}
+            <Download className="w-3.5 h-3.5 text-blue-500" /> High Quality PNG
           </span>
         </div>
       </section>
@@ -95,13 +94,28 @@ export default function Home() {
       {/* How It Works */}
       <section className="max-w-4xl mx-auto px-4 py-16">
         <h2 className="text-2xl sm:text-3xl font-bold text-center mb-12">
-          {t("howItWorks")}
+          How It Works
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 stagger">
           {[
-            { step: "1", title: t("step1Title"), desc: t("step1Desc"), color: "from-blue-500 to-indigo-500" },
-            { step: "2", title: t("step2Title"), desc: t("step2Desc"), color: "from-indigo-500 to-purple-500" },
-            { step: "3", title: t("step3Title"), desc: t("step3Desc"), color: "from-purple-500 to-pink-500" },
+            {
+              step: "1",
+              title: "Upload",
+              desc: "Upload any image — JPG, PNG, or WebP. Drag & drop or click to browse.",
+              color: "from-blue-500 to-indigo-500",
+            },
+            {
+              step: "2",
+              title: "AI Processes",
+              desc: "Our AI model analyzes your image and removes the background in seconds.",
+              color: "from-indigo-500 to-purple-500",
+            },
+            {
+              step: "3",
+              title: "Download",
+              desc: "Download your image with a transparent background as a high-quality PNG.",
+              color: "from-purple-500 to-pink-500",
+            },
           ].map((item) => (
             <div key={item.step} className="text-center group">
               <div className={`w-14 h-14 bg-gradient-to-br ${item.color} text-white rounded-2xl flex items-center justify-center text-xl font-bold mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
@@ -118,21 +132,54 @@ export default function Home() {
       <section id="features" className="bg-[var(--secondary)] py-16">
         <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3">
-            {t("featuresTitle")}
+            Why Choose AI BG Eraser?
           </h2>
           <p className="text-[var(--muted)] text-center mb-12 max-w-2xl mx-auto">
-            {t("featuresSubtitle")}
+            The fastest and easiest way to remove backgrounds from your images online.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 stagger">
             {[
-              { icon: <Zap className="w-5 h-5" />, title: t("featureSpeed"), desc: t("featureSpeedDesc"), gradient: "from-yellow-400 to-orange-500" },
-              { icon: <Shield className="w-5 h-5" />, title: t("featureFree"), desc: t("featureFreeDesc"), gradient: "from-green-400 to-emerald-500" },
-              { icon: <Sparkles className="w-5 h-5" />, title: t("featureAI"), desc: t("featureAIDesc"), gradient: "from-blue-400 to-indigo-500" },
-              { icon: <ImageIcon className="w-5 h-5" />, title: t("featureAnyImage"), desc: t("featureAnyImageDesc"), gradient: "from-pink-400 to-rose-500" },
-              { icon: <MonitorSmartphone className="w-5 h-5" />, title: t("featureEverywhere"), desc: t("featureEverywhereDesc"), gradient: "from-purple-400 to-violet-500" },
-              { icon: <Download className="w-5 h-5" />, title: t("featureQuality"), desc: t("featureQualityDesc"), gradient: "from-cyan-400 to-blue-500" },
+              {
+                icon: <Zap className="w-5 h-5" />,
+                title: "Lightning Fast",
+                desc: "Remove backgrounds in under 10 seconds. Our AI processes images instantly.",
+                gradient: "from-yellow-400 to-orange-500",
+              },
+              {
+                icon: <Shield className="w-5 h-5" />,
+                title: "Free to Start",
+                desc: "3 free background removals every day. No signup, no credit card required.",
+                gradient: "from-green-400 to-emerald-500",
+              },
+              {
+                icon: <Sparkles className="w-5 h-5" />,
+                title: "AI Precision",
+                desc: "State-of-the-art AI handles hair, fur, and complex edges perfectly.",
+                gradient: "from-blue-400 to-indigo-500",
+              },
+              {
+                icon: <ImageIcon className="w-5 h-5" />,
+                title: "Any Image Type",
+                desc: "Works with photos, product images, portraits, logos, graphics, and more.",
+                gradient: "from-pink-400 to-rose-500",
+              },
+              {
+                icon: <MonitorSmartphone className="w-5 h-5" />,
+                title: "Works Everywhere",
+                desc: "Use on desktop, tablet, or mobile. No software installation needed.",
+                gradient: "from-purple-400 to-violet-500",
+              },
+              {
+                icon: <Download className="w-5 h-5" />,
+                title: "High Quality PNG",
+                desc: "Download your result as a high-quality PNG with transparent background.",
+                gradient: "from-cyan-400 to-blue-500",
+              },
             ].map((feature) => (
-              <div key={feature.title} className="bg-[var(--background)] p-6 rounded-2xl border border-[var(--border)] hover:border-[var(--primary)]/30 hover:shadow-lg transition-all group">
+              <div
+                key={feature.title}
+                className="bg-[var(--background)] p-6 rounded-2xl border border-[var(--border)] hover:border-[var(--primary)]/30 hover:shadow-lg transition-all group"
+              >
                 <div className={`w-10 h-10 bg-gradient-to-br ${feature.gradient} text-white rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-sm`}>
                   {feature.icon}
                 </div>
@@ -147,20 +194,41 @@ export default function Home() {
       {/* Use Cases */}
       <section className="max-w-6xl mx-auto px-4 py-16">
         <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3">
-          {t("useCasesTitle")}
+          Perfect For Every Use Case
         </h2>
         <p className="text-[var(--muted)] text-center mb-12 max-w-2xl mx-auto">
-          {t("useCasesSubtitle")}
+          Whether you&apos;re an e-commerce seller, designer, or content creator — AI BG Eraser has you covered.
         </p>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 stagger">
           {[
-            { title: t("ecommerce"), desc: t("ecommerceDesc"), emoji: "🛒" },
-            { title: t("socialMedia"), desc: t("socialMediaDesc"), emoji: "📱" },
-            { title: t("design"), desc: t("designDesc"), emoji: "🎨" },
-            { title: t("marketing"), desc: t("marketingDesc"), emoji: "📊" },
+            {
+              title: "E-Commerce",
+              desc: "Clean product photos with white or transparent backgrounds for your online store.",
+              emoji: "🛒",
+            },
+            {
+              title: "Social Media",
+              desc: "Create eye-catching profile pictures and posts with custom backgrounds.",
+              emoji: "📱",
+            },
+            {
+              title: "Design",
+              desc: "Extract subjects from photos for use in graphic design and presentations.",
+              emoji: "🎨",
+            },
+            {
+              title: "Marketing",
+              desc: "Professional-looking images for ads, banners, and marketing materials.",
+              emoji: "📊",
+            },
           ].map((useCase) => (
-            <div key={useCase.title} className="p-5 sm:p-6 rounded-2xl border border-[var(--border)] hover:border-[var(--primary)] hover:shadow-md transition-all group">
-              <div className="text-3xl sm:text-4xl mb-3 group-hover:scale-110 transition-transform inline-block">{useCase.emoji}</div>
+            <div
+              key={useCase.title}
+              className="p-5 sm:p-6 rounded-2xl border border-[var(--border)] hover:border-[var(--primary)] hover:shadow-md transition-all group"
+            >
+              <div className="text-3xl sm:text-4xl mb-3 group-hover:scale-110 transition-transform inline-block">
+                {useCase.emoji}
+              </div>
               <h3 className="font-semibold mb-1.5 text-sm sm:text-base">{useCase.title}</h3>
               <p className="text-xs sm:text-sm text-[var(--muted)] leading-relaxed">{useCase.desc}</p>
             </div>
@@ -168,31 +236,31 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Comparison */}
+      {/* Comparison with competitors */}
       <section className="bg-[var(--secondary)] py-16">
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3">
-            {t("compTitle")}
+            Why Not Just Use remove.bg?
           </h2>
           <p className="text-[var(--muted)] text-center mb-10 max-w-2xl mx-auto">
-            {t("compSubtitle")}
+            We offer the same AI quality at a fraction of the price — or free.
           </p>
           <div className="overflow-x-auto">
             <table className="w-full text-sm border-collapse">
               <thead>
                 <tr className="border-b border-[var(--border)]">
-                  <th className="text-left py-3 px-4 font-semibold">{t("compFeature")}</th>
+                  <th className="text-left py-3 px-4 font-semibold">Feature</th>
                   <th className="text-center py-3 px-4 font-semibold text-[var(--primary)]">AI BG Eraser</th>
                   <th className="text-center py-3 px-4 font-semibold text-[var(--muted)]">remove.bg</th>
                 </tr>
               </thead>
               <tbody className="text-[var(--muted)]">
                 {[
-                  [t("compFreeUses"), t("compUs3"), t("compThem1")],
-                  [t("compProPrice"), t("compUsPrice"), t("compThemPrice")],
-                  [t("compAIQuality"), "⭐⭐⭐⭐⭐", "⭐⭐⭐⭐⭐"],
-                  [t("compSignup"), t("compNo"), t("compYes")],
-                  [t("compSpeed"), t("compUnder10"), t("compUnder10")],
+                  ["Free uses", "3/day", "1/month"],
+                  ["Pro price", "$9.90/mo", "$29/mo"],
+                  ["AI Quality", "⭐⭐⭐⭐⭐", "⭐⭐⭐⭐⭐"],
+                  ["Signup required", "No", "Yes"],
+                  ["Speed", "< 10s", "< 10s"],
                 ].map(([feature, us, them]) => (
                   <tr key={feature} className="border-b border-[var(--border)]">
                     <td className="py-3 px-4 font-medium text-[var(--foreground)]">{feature}</td>
@@ -210,22 +278,48 @@ export default function Home() {
       <section id="faq" className="py-16">
         <div className="max-w-3xl mx-auto px-4">
           <h2 className="text-2xl sm:text-3xl font-bold text-center mb-12">
-            {t("faqTitle")}
+            Frequently Asked Questions
           </h2>
           <div className="space-y-3">
             {[
-              { q: t("faq1Q"), a: t("faq1A") },
-              { q: t("faq2Q"), a: t("faq2A") },
-              { q: t("faq3Q"), a: t("faq3A") },
-              { q: t("faq4Q"), a: t("faq4A") },
-              { q: t("faq5Q"), a: t("faq5A") },
+              {
+                q: "Is AI BG Eraser free?",
+                a: "You get 3 free background removals every day — no signup needed. For unlimited access, HD output, and batch processing, check out our Pro plan at $9.90/month.",
+              },
+              {
+                q: "What image formats are supported?",
+                a: "AI BG Eraser supports JPG, JPEG, PNG, and WebP formats. The maximum file size is 20MB. Results are always downloaded as PNG with transparent background.",
+              },
+              {
+                q: "How does the AI background removal work?",
+                a: "We use a state-of-the-art AI model (RMBG-2.0) trained on millions of images. It accurately detects and separates the foreground subject from the background, even handling complex edges like hair and fur.",
+              },
+              {
+                q: "Are my images stored on your servers?",
+                a: "No. Your images are processed in real-time and are never stored. We respect your privacy — once you download your result, everything is deleted.",
+              },
+              {
+                q: "Can I use AI BG Eraser for commercial purposes?",
+                a: "Absolutely! You can use the processed images for any purpose, including commercial use. There are no restrictions on how you use the results.",
+              },
+              {
+                q: "How is AI BG Eraser different from remove.bg?",
+                a: "AI BG Eraser offers 3 free uses per day (vs 1/month for remove.bg), our Pro plan is $9.90/month (vs $29/month), and no signup is required. We use the same state-of-the-art AI technology for equally high-quality results.",
+              },
             ].map((faq) => (
-              <details key={faq.q} className="bg-[var(--background)] border border-[var(--border)] rounded-xl p-5 group hover:border-[var(--primary)]/30 transition-colors">
+              <details
+                key={faq.q}
+                className="bg-[var(--background)] border border-[var(--border)] rounded-xl p-5 group hover:border-[var(--primary)]/30 transition-colors"
+              >
                 <summary className="font-semibold cursor-pointer list-none flex items-center justify-between gap-4">
                   <span>{faq.q}</span>
-                  <span className="text-[var(--muted)] group-open:rotate-180 transition-transform shrink-0">▼</span>
+                  <span className="text-[var(--muted)] group-open:rotate-180 transition-transform shrink-0">
+                    ▼
+                  </span>
                 </summary>
-                <p className="mt-3 text-[var(--muted)] text-sm leading-relaxed">{faq.a}</p>
+                <p className="mt-3 text-[var(--muted)] text-sm leading-relaxed">
+                  {faq.a}
+                </p>
               </details>
             ))}
           </div>
@@ -234,15 +328,22 @@ export default function Home() {
 
       {/* CTA */}
       <section className="max-w-4xl mx-auto px-4 py-20 text-center">
-        <h2 className="text-2xl sm:text-3xl font-bold mb-4">{t("ctaTitle")}</h2>
-        <p className="text-[var(--muted)] mb-8 max-w-lg mx-auto">{t("ctaSubtitle")}</p>
+        <h2 className="text-2xl sm:text-3xl font-bold mb-4">
+          Ready to Remove Backgrounds?
+        </h2>
+        <p className="text-[var(--muted)] mb-8 max-w-lg mx-auto">
+          3 free uses every day. Upgrade to Pro for unlimited background removal, HD output, and more.
+        </p>
         <a
           href="#"
-          onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+          onClick={(e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
           className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[var(--primary)] to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-[1.02] transition-all text-lg pulse-glow"
         >
           <Sparkles className="w-5 h-5" />
-          {t("ctaButton")}
+          Start Removing Backgrounds — It&apos;s Free
           <ArrowRight className="w-5 h-5" />
         </a>
       </section>
