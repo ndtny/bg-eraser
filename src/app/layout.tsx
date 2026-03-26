@@ -83,13 +83,13 @@ export default function RootLayout({
             <nav className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
               <a href="/" className="flex items-center gap-2 group">
                 <div className="w-8 h-8 bg-gradient-to-br from-[var(--primary)] to-purple-600 rounded-lg flex items-center justify-center shadow-sm group-hover:shadow-md transition-all">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="3" y="3" width="18" height="18" rx="3" />
-                    <circle cx="12" cy="12" r="4" />
-                    <path d="M3 12h4" />
-                    <path d="M17 12h4" />
-                    <path d="M12 3v4" />
-                    <path d="M12 17v4" />
+                  <svg width="18" height="18" viewBox="0 0 32 32" fill="none">
+                    <circle cx="18" cy="11" r="4" fill="white"/>
+                    <path d="M11 28c0-5.5 3.1-10 7-10s7 4.5 7 28" fill="white"/>
+                    <rect x="4" y="4" width="5" height="5" fill="white" opacity="0.4"/>
+                    <rect x="14" y="4" width="5" height="5" fill="white" opacity="0.4"/>
+                    <rect x="9" y="9" width="5" height="5" fill="white" opacity="0.4"/>
+                    <rect x="4" y="14" width="5" height="5" fill="white" opacity="0.4"/>
                   </svg>
                 </div>
                 <span className="font-bold text-xl tracking-tight">
@@ -122,9 +122,11 @@ export default function RootLayout({
                 <div className="col-span-2 md:col-span-1">
                   <div className="flex items-center gap-2 mb-3">
                     <div className="w-6 h-6 bg-gradient-to-br from-[var(--primary)] to-purple-600 rounded-md flex items-center justify-center">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="3" y="3" width="18" height="18" rx="3" />
-                        <circle cx="12" cy="12" r="4" />
+                      <svg width="14" height="14" viewBox="0 0 32 32" fill="none">
+                        <circle cx="18" cy="11" r="4" fill="white"/>
+                        <path d="M11 28c0-5.5 3.1-10 7-10s7 4.5 7 28" fill="white"/>
+                        <rect x="4" y="4" width="5" height="5" fill="white" opacity="0.4"/>
+                        <rect x="9" y="9" width="5" height="5" fill="white" opacity="0.4"/>
                       </svg>
                     </div>
                     <span className="font-bold"><span className="text-[var(--primary)]">AI</span> BG Eraser</span>
