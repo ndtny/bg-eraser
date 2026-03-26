@@ -81,13 +81,13 @@ export default function ImageUploader({
       if (response.status === 429) {
         setLimitReached(true);
         setRemaining(0);
-        onError("Daily free limit reached. Upgrade to Pro for unlimited access.");
+        onError(t("limitDesc"));
         return;
       }
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to remove background");
+        throw new Error(errorData.error || t("processFailed"));
       }
 
       const result = await response.json();
@@ -104,7 +104,7 @@ export default function ImageUploader({
       onImageProcessed(originalUrl, result.image);
     } catch (err) {
       onError(
-        err instanceof Error ? err.message : "An unexpected error occurred"
+        err instanceof Error ? err.message : t("processFailed")
       );
     } finally {
       setIsProcessing(false);
@@ -117,14 +117,14 @@ export default function ImageUploader({
       const file = acceptedFiles[0];
       if (file) {
         if (file.size > 20 * 1024 * 1024) {
-          onError("File size must be less than 20MB");
+          onError(t("fileTooLarge"));
           return;
         }
         processImage(file);
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [limitReached]
+    [limitReached, t]
   );
 
   const { getRootProps, getInputProps, isDragActive, open } = useDropzone({

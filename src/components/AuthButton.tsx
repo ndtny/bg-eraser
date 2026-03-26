@@ -3,9 +3,11 @@
 import { useSession, signIn, signOut } from "next-auth/react";
 import { LogIn, LogOut } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useI18n } from "@/i18n/context";
 
 export default function AuthButton() {
   const { data: session, status } = useSession();
+  const { t } = useI18n();
   const [showMenu, setShowMenu] = useState(false);
   const [isPro, setIsPro] = useState(false);
 
@@ -58,7 +60,7 @@ export default function AuthButton() {
               className="fixed inset-0 z-40"
               onClick={() => setShowMenu(false)}
             />
-            <div className="absolute right-0 mt-1 w-48 bg-white border border-[var(--border)] rounded-xl shadow-lg z-50 py-1">
+            <div className="absolute right-0 mt-1 w-48 bg-[var(--background)] border border-[var(--border)] rounded-xl shadow-lg z-50 py-1">
               <div className="px-3 py-2 text-xs text-[var(--muted)] border-b border-[var(--border)]">
                 {session.user?.email}
               </div>
@@ -70,7 +72,7 @@ export default function AuthButton() {
                 className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
               >
                 <LogOut className="w-4 h-4" />
-                Sign Out
+                {t("signOut")}
               </button>
             </div>
           </>
@@ -85,7 +87,7 @@ export default function AuthButton() {
       className="flex items-center gap-2 px-4 py-2 bg-[var(--primary)] text-white rounded-lg hover:bg-[var(--primary-hover)] transition-colors text-sm font-medium"
     >
       <LogIn className="w-4 h-4" />
-      Sign In
+      {t("signIn")}
     </button>
   );
 }

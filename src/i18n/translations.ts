@@ -138,6 +138,10 @@ export const translations = {
     faq5Q: "Can I use AI BG Eraser for commercial purposes?",
     faq5A: "Absolutely! You can use the processed images for any purpose, including commercial use.",
 
+    // Auth
+    signIn: "Sign In",
+    signOut: "Sign Out",
+
     // Errors
     fileTooLarge: "File size must be less than 20MB",
     invalidImage: "Invalid image",
@@ -280,6 +284,10 @@ export const translations = {
     // FAQ extra
     faq5Q: "可以用于商业用途吗？",
     faq5A: "当然可以！处理后的图片可用于任何用途，包括商业用途。",
+
+    // Auth
+    signIn: "登录",
+    signOut: "退出登录",
 
     // Errors
     fileTooLarge: "文件大小不能超过 20MB",
