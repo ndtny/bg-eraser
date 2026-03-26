@@ -51,9 +51,10 @@ export default function ImageUploader({
 
     try {
       const compressedFile = await imageCompression(file, {
-        maxSizeMB: 2,
-        maxWidthOrHeight: 2048,
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1536,
         useWebWorker: true,
+        initialQuality: 0.85,
       });
 
       const originalUrl = URL.createObjectURL(file);

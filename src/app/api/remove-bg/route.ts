@@ -3,87 +3,106 @@ import { checkRateLimit, recordUsage } from "@/lib/rate-limit";
 import { isProUser } from "@/lib/subscriptions";
 
 const SPACE_URL = "https://briaai-bria-rmbg-2-0.hf.space";
+const COOKIE_NAME = "bg_usage";
 
 /**
- * Call BRIA RMBG-2.0 Space via raw Gradio HTTP API (no @gradio/client needed)
+ * Call BRIA RMBG-2.0 via Gradio API with timeout
  */
-async function callGradioSpace(imageBuffer: Buffer, mimeType: string): Promise<string> {
-  // Step 1: Upload image to Space
-  const uploadForm = new FormData();
-  const uint8 = new Uint8Array(imageBuffer);
-  uploadForm.append("files", new Blob([uint8], { type: mimeType }), "image.png");
+async function callGradioSpace(imageBuffer: Buffer, mimeType: string): Promise<Buffer> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 30000); // 30s timeout
 
-  const uploadRes = await fetch(`${SPACE_URL}/upload`, {
-    method: "POST",
-    body: uploadForm,
-  });
+  try {
+    // Step 1: Upload image
+    const uploadForm = new FormData();
+    uploadForm.append(
+      "files",
+      new Blob([new Uint8Array(imageBuffer)], { type: mimeType }),
+      "image.png"
+    );
 
-  if (!uploadRes.ok) {
-    throw new Error(`Upload failed: ${uploadRes.status}`);
-  }
+    const uploadRes = await fetch(`${SPACE_URL}/upload`, {
+      method: "POST",
+      body: uploadForm,
+      signal: controller.signal,
+    });
 
-  const uploadedFiles = await uploadRes.json();
-  const filePath = uploadedFiles[0]; // server path of uploaded file
+    if (!uploadRes.ok) {
+      throw new Error(`Upload failed: ${uploadRes.status}`);
+    }
 
-  // Step 2: Call the /image endpoint
-  const predictRes = await fetch(`${SPACE_URL}/api/predict`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      fn_index: 0,
-      data: [{ path: filePath, meta: { _type: "gradio.FileData" } }],
-    }),
-  });
+    const uploadedFiles = await uploadRes.json();
+    const filePath = uploadedFiles[0];
 
-  if (!predictRes.ok) {
-    // Try alternate endpoint format
-    const predictRes2 = await fetch(`${SPACE_URL}/call/image`, {
+    // Step 2: Try /api/predict first (faster, single request)
+    const predictRes = await fetch(`${SPACE_URL}/api/predict`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        fn_index: 0,
         data: [{ path: filePath, meta: { _type: "gradio.FileData" } }],
       }),
+      signal: controller.signal,
     });
 
-    if (!predictRes2.ok) {
-      throw new Error(`Predict failed: ${predictRes2.status}`);
-    }
+    let resultUrl: string;
 
-    const callData = await predictRes2.json();
-    const eventId = callData.event_id;
+    if (predictRes.ok) {
+      const result = await predictRes.json();
+      const noBgFile = result.data?.[1];
+      if (noBgFile?.url) {
+        resultUrl = noBgFile.url;
+      } else if (noBgFile?.path) {
+        resultUrl = `${SPACE_URL}/file=${noBgFile.path}`;
+      } else {
+        throw new Error("No output image in predict response");
+      }
+    } else {
+      // Fallback: /call/image SSE endpoint
+      const callRes = await fetch(`${SPACE_URL}/call/image`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          data: [{ path: filePath, meta: { _type: "gradio.FileData" } }],
+        }),
+        signal: controller.signal,
+      });
 
-    // SSE stream to get result
-    const resultRes = await fetch(`${SPACE_URL}/call/image/${eventId}`);
-    const resultText = await resultRes.text();
-    
-    // Parse SSE response - find the "data:" line with the result
-    const lines = resultText.split("\n");
-    for (const line of lines) {
-      if (line.startsWith("data: ")) {
-        const data = JSON.parse(line.slice(6));
-        if (Array.isArray(data) && data[1]?.url) {
-          return data[1].url;
+      if (!callRes.ok) {
+        throw new Error(`Predict failed: ${callRes.status}`);
+      }
+
+      const callData = await callRes.json();
+      const eventId = callData.event_id;
+
+      const resultRes = await fetch(`${SPACE_URL}/call/image/${eventId}`, {
+        signal: controller.signal,
+      });
+      const resultText = await resultRes.text();
+
+      resultUrl = "";
+      for (const line of resultText.split("\n")) {
+        if (line.startsWith("data: ")) {
+          try {
+            const data = JSON.parse(line.slice(6));
+            if (Array.isArray(data) && data[1]?.url) {
+              resultUrl = data[1].url;
+              break;
+            }
+          } catch {}
         }
       }
+      if (!resultUrl) throw new Error("No result in SSE response");
     }
-    throw new Error("No result in SSE response");
-  }
 
-  const result = await predictRes.json();
-  
-  // result.data[1] is the no-bg PNG
-  const noBgFile = result.data?.[1];
-  if (noBgFile?.url) {
-    return noBgFile.url;
+    // Step 3: Download result image
+    const imageRes = await fetch(resultUrl, { signal: controller.signal });
+    const resultBuffer = Buffer.from(await imageRes.arrayBuffer());
+    return resultBuffer;
+  } finally {
+    clearTimeout(timeout);
   }
-  if (noBgFile?.path) {
-    return `${SPACE_URL}/file=${noBgFile.path}`;
-  }
-
-  throw new Error("No output image in response");
 }
-
-const COOKIE_NAME = "bg_usage";
 
 export async function POST(request: NextRequest) {
   try {
@@ -91,7 +110,6 @@ export async function POST(request: NextRequest) {
 
     // Pro users skip rate limit
     const userIsPro = email ? await isProUser(email) : false;
-
     const cookieValue = request.cookies.get(COOKIE_NAME)?.value;
 
     if (!userIsPro) {
@@ -109,29 +127,20 @@ export async function POST(request: NextRequest) {
     }
 
     if (!image || !image.startsWith("data:image/")) {
-      return NextResponse.json(
-        { error: "Invalid image" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Invalid image" }, { status: 400 });
     }
 
-    // Decode base64 image
+    // Decode base64
     const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
     const imageBuffer = Buffer.from(base64Data, "base64");
     const mimeMatch = image.match(/^data:(image\/\w+);base64,/);
     const mimeType = mimeMatch ? mimeMatch[1] : "image/png";
 
-    // Call BRIA RMBG-2.0
-    const resultUrl = await callGradioSpace(imageBuffer, mimeType);
+    // Process
+    const resultBuffer = await callGradioSpace(imageBuffer, mimeType);
+    const processedImage = `data:image/png;base64,${resultBuffer.toString("base64")}`;
 
-    // Fetch result and convert to base64
-    const imageResponse = await fetch(resultUrl);
-    const resultBuffer = await imageResponse.arrayBuffer();
-    const resultBase64 = Buffer.from(resultBuffer).toString("base64");
-    const contentType = imageResponse.headers.get("content-type") || "image/png";
-    const processedImage = `data:${contentType};base64,${resultBase64}`;
-
-    // Build response
+    // Pro response
     if (userIsPro) {
       return NextResponse.json({
         image: processedImage,
@@ -140,7 +149,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Record usage for free users via cookie
+    // Free user — record usage
     const { newCookie, remaining } = recordUsage(cookieValue);
     const response = NextResponse.json({
       image: processedImage,
@@ -148,7 +157,6 @@ export async function POST(request: NextRequest) {
       isPro: false,
     });
 
-    // Set signed cookie (httpOnly, 24h expiry)
     response.cookies.set(COOKIE_NAME, newCookie, {
       httpOnly: true,
       secure: true,
@@ -160,14 +168,11 @@ export async function POST(request: NextRequest) {
     return response;
   } catch (error) {
     console.error("Background removal error:", error);
+    const msg = error instanceof Error ? error.message : "Failed to process image";
+    const isTimeout = msg.includes("abort");
     return NextResponse.json(
-      {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Failed to process image. Please try again.",
-      },
-      { status: 500 }
+      { error: isTimeout ? "Processing timed out. Try a smaller image." : msg },
+      { status: isTimeout ? 504 : 500 }
     );
   }
 }
