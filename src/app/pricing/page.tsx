@@ -41,7 +41,7 @@ const plans = [
       { text: "HD high-resolution output", included: true },
       { text: "PNG download (no watermark)", included: true },
       { text: "AI background replacement", included: true },
-      { text: "Batch processing (up to 50)", included: true },
+      { text: "Batch processing (up to 20)", included: true },
       { text: "Priority processing speed", included: true },
       { text: "Email support", included: true },
       { text: "API access", included: false },

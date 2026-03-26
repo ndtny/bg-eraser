@@ -110,7 +110,7 @@ export default function Home() {
                   <div>
                     <p className="text-lg font-semibold">Batch Processing — Pro Feature</p>
                     <p className="text-sm text-[var(--muted)] mt-1">
-                      Process up to 50 images at once with a Pro plan.
+                      Process up to 20 images at once with a Pro plan.
                     </p>
                   </div>
                   <a

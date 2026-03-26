@@ -110,7 +110,7 @@ export default function BatchUploader() {
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      const maxFiles = 50;
+      const maxFiles = 20;
       const filesToAdd = acceptedFiles.slice(0, maxFiles - items.length);
 
       const newItems: BatchItem[] = filesToAdd.map((file) => ({
@@ -133,7 +133,7 @@ export default function BatchUploader() {
       "image/png": [".png"],
       "image/webp": [".webp"],
     },
-    maxFiles: 50,
+    maxFiles: 20,
     disabled: isProcessing,
   });
 
@@ -171,7 +171,7 @@ export default function BatchUploader() {
         <input {...getInputProps()} />
         <Upload className="w-8 h-8 text-[var(--muted)] mx-auto mb-2" />
         <p className="text-sm font-medium">
-          {isDragActive ? "Drop images here" : "Drop up to 50 images or click to browse"}
+          {isDragActive ? "Drop images here" : "Drop up to 20 images or click to browse"}
         </p>
         <p className="text-xs text-[var(--muted)] mt-1">JPG, PNG, WebP · Max 20MB each</p>
       </div>
