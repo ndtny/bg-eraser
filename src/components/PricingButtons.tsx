@@ -94,18 +94,17 @@ export default function PricingButtons({
     );
   }
 
-  // Pro plan — PayPal checkout
+  // Pro plan — Coming Soon (payment testing in progress)
+  const baseStyle = highlighted
+    ? "bg-[var(--primary)]/20 text-[var(--primary)] border border-[var(--primary)]/30"
+    : "border border-[var(--border)] text-[var(--muted)]";
+
   return (
     <button
-      onClick={handleCheckout}
-      disabled={loading}
-      className={`block w-full py-3 rounded-xl text-center font-medium transition-smooth ${
-        highlighted
-          ? "bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)]"
-          : "border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--secondary)]"
-      } ${loading ? "opacity-70 cursor-wait" : ""}`}
+      disabled
+      className={`block w-full py-3 rounded-xl text-center font-medium cursor-not-allowed ${baseStyle}`}
     >
-      {loading ? "Redirecting to PayPal..." : session?.user?.email ? label : "Sign In to Subscribe"}
+      Coming Soon
     </button>
   );
 }
