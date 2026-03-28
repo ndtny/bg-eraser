@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSession } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 import ImageUploader from "@/components/ImageUploader";
 import ImagePreview from "@/components/ImagePreview";
 import {
@@ -14,9 +16,44 @@ import {
 } from "lucide-react";
 
 export default function Home() {
+  return (
+    <Suspense>
+      <HomeContent />
+    </Suspense>
+  );
+}
+
+function HomeContent() {
+  const { data: session } = useSession();
+  const searchParams = useSearchParams();
   const [originalImage, setOriginalImage] = useState<string | null>(null);
   const [processedImage, setProcessedImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [upgradeSuccess, setUpgradeSuccess] = useState(false);
+
+  // Auto-activate Pro after PayPal redirect
+  useEffect(() => {
+    const upgraded = searchParams.get("upgraded");
+    const subId = searchParams.get("subscription_id");
+    const email = session?.user?.email;
+
+    if (upgraded === "1" && subId && email) {
+      fetch("/api/subscription/activate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subscriptionId: subId, email }),
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          if (data.success) {
+            setUpgradeSuccess(true);
+            // Clean URL
+            window.history.replaceState({}, "", "/");
+          }
+        })
+        .catch(() => {});
+    }
+  }, [searchParams, session]);
 
   const handleImageProcessed = (original: string, processed: string) => {
     setOriginalImage(original);
@@ -38,6 +75,11 @@ export default function Home() {
     <div>
       {/* Hero Section */}
       <section className="max-w-4xl mx-auto px-4 pt-12 sm:pt-20 pb-12 text-center animate-fade-in-up">
+        {upgradeSuccess && (
+          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm inline-flex items-center gap-2">
+            🎉 Welcome to Pro! You now have unlimited background removals and batch processing.
+          </div>
+        )}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-indigo-50 text-[var(--primary)] rounded-full text-sm font-medium mb-6 border border-indigo-100">
           <Sparkles className="w-4 h-4" />
           AI-Powered · 3 Free Uses Daily · No Signup
