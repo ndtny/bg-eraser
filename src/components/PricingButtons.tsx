@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession, signIn } from "next-auth/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface PricingButtonsProps {
   action: string;
@@ -16,6 +16,16 @@ export default function PricingButtons({
 }: PricingButtonsProps) {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
+  const [isPro, setIsPro] = useState(false);
+
+  useEffect(() => {
+    if (session?.user?.email) {
+      fetch(`/api/usage?email=${encodeURIComponent(session.user.email)}`)
+        .then((r) => r.json())
+        .then((d) => setIsPro(d.isPro || false))
+        .catch(() => {});
+    }
+  }, [session]);
 
   const handleCheckout = async () => {
     if (!session?.user?.email) {
@@ -64,6 +74,22 @@ export default function PricingButtons({
         className="block w-full py-3 rounded-xl text-center font-medium cursor-not-allowed border border-[var(--border)] text-[var(--muted)]"
       >
         Coming Soon
+      </button>
+    );
+  }
+
+  // Pro plan — already subscribed
+  if (isPro && action === "pro") {
+    return (
+      <button
+        disabled
+        className={`block w-full py-3 rounded-xl text-center font-medium ${
+          highlighted
+            ? "bg-green-500 text-white"
+            : "border border-green-500 text-green-600"
+        }`}
+      >
+        ✓ Current Plan
       </button>
     );
   }
