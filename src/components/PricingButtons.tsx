@@ -3,20 +3,6 @@
 import { useSession, signIn } from "next-auth/react";
 import { useState } from "react";
 
-declare global {
-  interface Window {
-    Paddle?: {
-      Checkout: {
-        open: (options: Record<string, unknown>) => void;
-      };
-      Setup: (options: Record<string, unknown>) => void;
-    };
-  }
-}
-
-const PADDLE_PRICE_ID = "pri_01kmmjpjytkcmrmq9y36d5sq2t";
-const PADDLE_CLIENT_TOKEN = "live_49a94598ece6f4c6f3cbb842275";
-
 interface PricingButtonsProps {
   action: string;
   label: string;
@@ -31,24 +17,6 @@ export default function PricingButtons({
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
 
-  const initPaddle = (): Promise<void> => {
-    return new Promise((resolve) => {
-      if (window.Paddle) {
-        resolve();
-        return;
-      }
-      const script = document.createElement("script");
-      script.src = "https://cdn.paddle.com/paddle/v2/paddle.js";
-      script.onload = () => {
-        window.Paddle?.Setup({
-          token: PADDLE_CLIENT_TOKEN,
-        });
-        resolve();
-      };
-      document.head.appendChild(script);
-    });
-  };
-
   const handleCheckout = async () => {
     if (!session?.user?.email) {
       signIn("google");
@@ -57,23 +25,22 @@ export default function PricingButtons({
 
     setLoading(true);
     try {
-      await initPaddle();
-
-      window.Paddle?.Checkout.open({
-        items: [{ priceId: PADDLE_PRICE_ID, quantity: 1 }],
-        customer: {
-          email: session.user.email,
-        },
-        customData: {
-          email: session.user.email,
-        },
-        settings: {
-          successUrl: "https://www.aibgeraser.com/?upgraded=1",
-          theme: "light",
-        },
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: session.user.email }),
       });
+
+      const data = await res.json();
+
+      if (data.approvalUrl) {
+        window.location.href = data.approvalUrl;
+      } else {
+        alert("Failed to create checkout. Please try again.");
+      }
     } catch (error) {
       console.error("Checkout error:", error);
+      alert("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -101,25 +68,7 @@ export default function PricingButtons({
     );
   }
 
-  // Pro plan — Coming Soon until Paddle approved
-  const paddleApproved = false; // flip to true when Paddle approves
-
-  if (!paddleApproved) {
-    const baseStyle = highlighted
-      ? "bg-[var(--primary)]/20 text-[var(--primary)] border border-[var(--primary)]/30"
-      : "border border-[var(--border)] text-[var(--muted)]";
-
-    return (
-      <button
-        disabled
-        className={`block w-full py-3 rounded-xl text-center font-medium cursor-not-allowed ${baseStyle}`}
-      >
-        Coming Soon
-      </button>
-    );
-  }
-
-  // Pro plan — Paddle checkout (active after approval)
+  // Pro plan — PayPal checkout
   return (
     <button
       onClick={handleCheckout}
@@ -130,7 +79,7 @@ export default function PricingButtons({
           : "border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--secondary)]"
       } ${loading ? "opacity-70 cursor-wait" : ""}`}
     >
-      {loading ? "Loading..." : session?.user?.email ? label : "Sign In to Subscribe"}
+      {loading ? "Redirecting to PayPal..." : session?.user?.email ? label : "Sign In to Subscribe"}
     </button>
   );
 }

@@ -12,6 +12,7 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
+    "@paypal/checkout-server-sdk": "^1.0.3",
     "@upstash/redis": "^1.37.0",
     "browser-image-compression": "^2.0.2",
     "lucide-react": "^1.0.1",
