@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { setProUser, getSubscriptionByEmail } from "@/lib/subscriptions";
+import { setProUser, removeProUser, getSubscriptionByEmail } from "@/lib/subscriptions";
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, secret } = await request.json();
+    const { email, secret, action } = await request.json();
 
     if (!secret || secret !== process.env.NEXTAUTH_SECRET) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -11,6 +11,14 @@ export async function POST(request: NextRequest) {
 
     if (!email) {
       return NextResponse.json({ error: "Email required" }, { status: 400 });
+    }
+
+    if (action === "remove") {
+      await removeProUser(email);
+      return NextResponse.json({
+        success: true,
+        message: `${email} Pro status removed`,
+      });
     }
 
     await setProUser(email);
