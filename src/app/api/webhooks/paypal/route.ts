@@ -16,10 +16,12 @@ export async function POST(req: NextRequest) {
 
     console.log(`[PayPal Webhook] ${eventType}`);
 
-    // Extract subscriber email
+    // Extract user email - prefer custom_id (our site email) over PayPal subscriber email
     let email: string | null = null;
 
-    if (event.resource?.subscriber?.email_address) {
+    if (event.resource?.custom_id) {
+      email = event.resource.custom_id.toLowerCase();
+    } else if (event.resource?.subscriber?.email_address) {
       email = event.resource.subscriber.email_address.toLowerCase();
     } else if (event.resource?.id && eventType.startsWith("BILLING.SUBSCRIPTION")) {
       // Fetch subscription details to get email

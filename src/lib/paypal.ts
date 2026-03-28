@@ -38,6 +38,7 @@ export async function createSubscription(planId: string, email: string) {
     },
     body: JSON.stringify({
       plan_id: planId,
+      custom_id: email,
       subscriber: {
         email_address: email,
       },

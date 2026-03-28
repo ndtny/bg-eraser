@@ -30,7 +30,8 @@ export async function POST(req: NextRequest) {
 
     // Check subscription is active or approved
     if (sub.status === "ACTIVE" || sub.status === "APPROVED") {
-      const subscriberEmail = sub.subscriber?.email_address?.toLowerCase() || email.toLowerCase();
+      // Prefer custom_id (our site email) over PayPal subscriber email
+      const subscriberEmail = sub.custom_id?.toLowerCase() || email.toLowerCase();
       await setProUser(subscriberEmail);
 
       return NextResponse.json({
