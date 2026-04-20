@@ -27,9 +27,6 @@ export default function NavBar() {
             <a href="/#features" className="hover:text-[var(--foreground)] transition-colors">
               Features
             </a>
-            <a href="/pricing" className="hover:text-[var(--foreground)] transition-colors">
-              Pricing
-            </a>
             <a href="/#faq" className="hover:text-[var(--foreground)] transition-colors">
               FAQ
             </a>

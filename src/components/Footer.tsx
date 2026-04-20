@@ -36,7 +36,6 @@ export default function Footer() {
             <ul className="space-y-2 text-sm text-[var(--muted)]">
               <li><a href="/product-photo-background-remover" className="hover:text-[var(--foreground)] transition-colors">Product Photos</a></li>
               <li><a href="/remove-white-background" className="hover:text-[var(--foreground)] transition-colors">Remove White Background</a></li>
-              <li><a href="/pricing" className="hover:text-[var(--foreground)] transition-colors">Pricing</a></li>
             </ul>
           </div>
           <div>
